@@ -5,7 +5,7 @@ public class Student {
     private String name;
     private String email;
     private String passwordHash;
-
+    
     // Getters & Setters
     public String getStudentId() { return studentId; }
     public void setStudentId(String studentId) { this.studentId = studentId; }
@@ -18,4 +18,5 @@ public class Student {
 
     public String getPasswordHash() { return passwordHash; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+    
 }

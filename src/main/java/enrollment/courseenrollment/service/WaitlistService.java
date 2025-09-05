@@ -17,11 +17,12 @@ public class WaitlistService {
     }
 
     // Join waitlist for a course
-    public void joinWaitlist(String studentId, String courseId) {
+    public boolean joinWaitlist(String studentId, String courseId) {
         // TODO: create Enrollment with status WAITLISTED
         // TODO: determine position in waitlist
         // TODO: save using enrollmentRepo.createEnrollment(...)
         // TODO: log action
+    	return false;
     }
 
     // Process when a seat opens in a course

@@ -16,9 +16,10 @@ public class StudentService {
     }
 
     // Sign up a new student
-    public void signUp(Student student) {
+    public boolean signUp(Student student) {
         // TODO: validation, call studentRepo.createStudent(student)
         // TODO: log action using logRepo.createLog(...)
+    	return false;
     }
 
     // Login by email + password hash
@@ -34,14 +35,16 @@ public class StudentService {
     }
 
     // Update profile
-    public void updateProfile(Student student) {
+    public boolean updateProfile(Student student) {
         // TODO: call studentRepo.updateStudent(student)
         // TODO: log action
+    	return false;
     }
 
     // Change password
-    public void changePassword(String studentId, String newPasswordHash) {
+    public boolean changePassword(String studentId, String newPasswordHash) {
         // TODO: fetch, update password, save
         // TODO: log action
+    	return false;
     }
 }
