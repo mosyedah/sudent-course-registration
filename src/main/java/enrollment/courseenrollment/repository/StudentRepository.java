@@ -6,5 +6,5 @@ public interface StudentRepository {
 	void createStudent(Student student);
 	Student getStudentById(String studentId);
 	Student getStudentByEmail(String email);
-	void updateStudent(Student student);
+	Student updateStudent(Student student);
 }

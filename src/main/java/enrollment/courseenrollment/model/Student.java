@@ -6,6 +6,20 @@ public class Student {
     private String email;
     private String passwordHash;
     
+    public Student() {
+		// TODO Auto-generated constructor stub
+	}
+    public Student(Student other) {
+    	if (other!=null) {
+			this.studentId = other.studentId;
+			this.name = other.name;
+			this.email = other.email;
+			this.passwordHash = other.passwordHash;
+		}
+    }
+    
+    
+    
     // Getters & Setters
     public String getStudentId() { return studentId; }
     public void setStudentId(String studentId) { this.studentId = studentId; }

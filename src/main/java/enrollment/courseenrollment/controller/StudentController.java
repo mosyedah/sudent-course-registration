@@ -115,20 +115,17 @@ public class StudentController {
             System.out.println("Invalid email. Update aborted.");
             return;
         }
-        Student student = new Student();
+        Student student = new Student(loggedInStudent);
         student.setEmail(email.isBlank() ? loggedInStudent.getEmail() : email);
-        student.setStudentId(loggedInStudent.getStudentId());
         student.setName(name.isBlank() ? loggedInStudent.getName() : name);
-        
-        boolean updated = studentService.updateProfile(student);
+        try {
+			
+        	loggedInStudent = studentService.updateProfile(student);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 
-        if (updated) {
-            System.out.println("Profile updated successfully.");
-            if (!name.isBlank()) loggedInStudent.setName(name);
-            if (!email.isBlank()) loggedInStudent.setEmail(email);
-        } else {
-            System.out.println("Update failed. Try again later.");
-        }
+       
     }
 
     /**

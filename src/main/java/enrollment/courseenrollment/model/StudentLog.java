@@ -10,6 +10,7 @@ public class StudentLog {
     private String courseId;
     private ActionType action;
     private Date timestamp;
+    private String description;
 
     // Getters & Setters
     public String getLogId() { return logId; }
@@ -26,4 +27,7 @@ public class StudentLog {
 
     public Date getTimestamp() { return timestamp; }
     public void setTimestamp(Date timestamp) { this.timestamp = timestamp; }
+	
+    public String getDescription() { return description;}
+	public void setDescription(String description) { this.description = description;}
 }

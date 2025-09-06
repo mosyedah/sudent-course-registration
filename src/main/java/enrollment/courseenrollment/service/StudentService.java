@@ -36,10 +36,10 @@ public class StudentService {
     }
 
     // Update profile
-    public boolean updateProfile(Student student) {
+    public Student updateProfile(Student student) {
         // TODO: call studentRepo.updateStudent(student)
         // TODO: log action
-    	return false;
+    	return null;
     }
 
     // Change password

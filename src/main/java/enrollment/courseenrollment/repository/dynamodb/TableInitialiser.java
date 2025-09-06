@@ -11,7 +11,7 @@ public class TableInitialiser {
 //		createStudentTable();
 //		createCourseTable();
 //		createEnrollmentTable();
-		createStudentLogTable();
+//		createStudentLogTable();
 		
 	}
 
@@ -72,11 +72,57 @@ public class TableInitialiser {
 		}
 		
 	}
+	
+	/*
+	 * nothig can be unique , so LogId is partition key ,
+	 *  GSI on Student Id can be helpful for faster searches , projection as logId , StudentId
+	 */
 	private static void createStudentLogTable() {
 		try {
-			
+			CreateTableRequest request = CreateTableRequest.builder()
+					.tableName(StudentLogTableConstants.TABLE_NAME)
+					.keySchema(KeySchemaElement.builder()
+							.attributeName(StudentLogTableConstants.LOG_ID)
+							.keyType(KeyType.HASH)
+							.build()
+							)
+					.attributeDefinitions(AttributeDefinition.builder()
+								.attributeName(StudentLogTableConstants.LOG_ID)
+								.attributeType(ScalarAttributeType.S)
+								.build(),
+							AttributeDefinition.builder()
+								.attributeName(StudentLogTableConstants.STUDENT_ID)
+								.attributeType(ScalarAttributeType.S)
+								.build()
+							)
+					.globalSecondaryIndexes(GlobalSecondaryIndex.builder()
+							.indexName(StudentLogTableConstants.STUDENT_ID_INDEX)
+							.keySchema(KeySchemaElement.builder()
+									.attributeName(StudentLogTableConstants.STUDENT_ID)
+									.keyType(KeyType.HASH)
+									.build()
+									)
+							.projection(Projection.builder()
+									.projectionType(ProjectionType.KEYS_ONLY)
+									.build()
+									)
+							.provisionedThroughput(ProvisionedThroughput.builder()
+									.readCapacityUnits(5L)
+									.writeCapacityUnits(5L)
+									.build()
+									)
+							.build()
+							)
+					.provisionedThroughput(ProvisionedThroughput.builder()
+							.readCapacityUnits(5L)
+							.writeCapacityUnits(5L)
+							.build()
+							)
+					.build();
+			client.createTable(request);
+					
 		} catch (Exception e) {
-			// TODO: handle exception
+			System.out.println(e.getMessage());
 		}
 	}
 
