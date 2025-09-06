@@ -18,6 +18,7 @@ public class StudentService {
     // Sign up a new student
     public boolean signUp(Student student) {
         // TODO: validation, call studentRepo.createStudent(student)
+    	// TODO: add Student ID unique to student.studentId
         // TODO: log action using logRepo.createLog(...)
     	return false;
     }
