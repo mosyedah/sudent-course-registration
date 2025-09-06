@@ -5,7 +5,6 @@ import java.util.Date;
 import enrollment.courseenrollment.model.enums.EnrollmentStatus;
 
 public class Enrollment {
-    private String enrollmentId;
     private String studentId;
     private String courseId;
     private EnrollmentStatus status;
@@ -13,9 +12,6 @@ public class Enrollment {
     private Date waitlistedAt;
     private Date enrolledAt;
 
-    // Getters & Setters
-    public String getEnrollmentId() { return enrollmentId; }
-    public void setEnrollmentId(String enrollmentId) { this.enrollmentId = enrollmentId; }
 
     public String getStudentId() { return studentId; }
     public void setStudentId(String studentId) { this.studentId = studentId; }

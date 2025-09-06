@@ -1,4 +1,4 @@
-package enrollment.courseenrollment.repository;
+package enrollment.courseenrollment.repository.dynamodb;
 
 import java.net.URI;
 
