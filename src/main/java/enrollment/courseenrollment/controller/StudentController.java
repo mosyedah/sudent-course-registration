@@ -53,8 +53,8 @@ public class StudentController {
         student.setEmail(email);
         student.setPasswordHash(passwordHash);
 
-        boolean success = studentService.signUp(student);
-        if (success) {
+        student = studentService.signUp(student);
+        if (student!=null) {
             System.out.println("Thank you for details, your account is created and now you’re logged in.");
             this.loggedInStudent = student;
             SessionManager.createSession(student.getStudentId());
