@@ -15,6 +15,7 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
+import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
 public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 	private static final DynamoDbClient client = DynamoDbConfig.getClient();
@@ -34,9 +35,15 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 		if (enrollment.getWaitlistedAt()!=null)
 			item.put(EnrollementTableConstants.WAITLISTED_AT, 
 					AttributeValue.builder().s(enrollment.getWaitlistedAt().toString()).build());
-		if (enrollment.getWaitlistedAt()!=null)
+		if (enrollment.getEnrolledAt()!=null)
 			item.put(EnrollementTableConstants.ENROLLED_AT, 
 					AttributeValue.builder().s(enrollment.getEnrolledAt().toString()).build());
+		if (enrollment.getDroppedAt()!=null)
+			item.put(EnrollementTableConstants.DROPPED_AT, 
+					AttributeValue.builder().s(enrollment.getDroppedAt().toString()).build());
+		if (enrollment.getOptedOutAt()!=null)
+			item.put(EnrollementTableConstants.OPTED_OUT_AT, 
+					AttributeValue.builder().s(enrollment.getOptedOutAt().toString()).build());
 		PutItemRequest request = PutItemRequest.builder()
 				.tableName(EnrollementTableConstants.TABLE_NAME).item(item).build();
 		
@@ -81,20 +88,75 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 						":status",AttributeValue.builder().s(EnrollmentStatus.WAITLISTED.toString()).build() 
 						))
 				.build();
-		return null;
+		List<Enrollment> enrollments = new ArrayList<Enrollment>();
+		try {
+			QueryResponse response = client.query(request);
+			for (Map<String, AttributeValue> item : response.items()) {
+				enrollments.add(itemToEnrollment(item));
+			}
+			return enrollments;
+		} catch (Exception e) {
+			throw new DatabaseUnknownException("Unknown Error, Try Later");
+		}
 	}
 
 	@Override
 	public boolean updateEnrollment(Enrollment enrollment) {
-		// TODO Auto-generated method stub
-		return false;
+	    Map<String, AttributeValue> key = Map.of(
+	            EnrollementTableConstants.STUDENT_ID,
+	            AttributeValue.builder().s(enrollment.getStudentId()).build(),
+	            EnrollementTableConstants.COURSE_ID,
+	            AttributeValue.builder().s(enrollment.getCourseId()).build()
+	    );
+
+	    StringBuilder updateExpression = new StringBuilder("SET ");
+	    Map<String, AttributeValue> expressionValues = new HashMap<>();
+
+	    appendUpdateField(updateExpression, expressionValues,
+	            EnrollementTableConstants.STATUS,
+	            enrollment.getStatus() != null ? AttributeValue.builder().s(enrollment.getStatus().name()).build() : null);
+
+	    appendUpdateField(updateExpression, expressionValues,
+	            EnrollementTableConstants.POSITION_WAITLIST,
+	            enrollment.getPositionInWaitlist() != null ? AttributeValue.builder().n(enrollment.getPositionInWaitlist().toString()).build() : null);
+
+	    appendUpdateField(updateExpression, expressionValues,
+	            EnrollementTableConstants.WAITLISTED_AT,
+	            enrollment.getWaitlistedAt() != null ? AttributeValue.builder().s(enrollment.getWaitlistedAt().toString()).build() : null);
+
+	    appendUpdateField(updateExpression, expressionValues,
+	            EnrollementTableConstants.ENROLLED_AT,
+	            enrollment.getEnrolledAt() != null ? AttributeValue.builder().s(enrollment.getEnrolledAt().toString()).build() : null);
+
+	    appendUpdateField(updateExpression, expressionValues,
+	            EnrollementTableConstants.DROPPED_AT,
+	            enrollment.getDroppedAt() != null ? AttributeValue.builder().s(enrollment.getDroppedAt().toString()).build() : null);
+
+	    appendUpdateField(updateExpression, expressionValues,
+	            EnrollementTableConstants.OPTED_OUT_AT,
+	            enrollment.getOptedOutAt() != null ? AttributeValue.builder().s(enrollment.getOptedOutAt().toString()).build() : null);
+
+	    if (expressionValues.isEmpty()) return false;
+	    
+	    UpdateItemRequest request = UpdateItemRequest.builder()
+	    		.tableName(EnrollementTableConstants.TABLE_NAME)
+	    		.key(key)
+	    		.updateExpression(new String(updateExpression))
+	    		.expressionAttributeValues(expressionValues)
+	    		.build();
+
+	    try {
+	        client.updateItem(request);
+	        return true;
+	    } catch (Exception e) {
+	        throw new DatabaseUnknownException("Unknown Error Try Later");
+	    }
 	}
 
-	@Override
-	public boolean deleteEnrollment(String enrollmentId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
+
+
+
 	
 	private Enrollment itemToEnrollment(Map<String, AttributeValue> item) {
 	    Enrollment enrollment = new Enrollment();
@@ -133,5 +195,15 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 	    return enrollment;
 	}
 
+	private void appendUpdateField(StringBuilder expr, Map<String, AttributeValue> values,
+			String attrName, AttributeValue attrValue) {
+		if (attrValue == null) return;
+		
+		if (expr.length() > 4) { // "SET " is length 4
+			expr.append(", ");
+		}
+		expr.append(attrName).append(" = :").append(attrName);
+		values.put(":" + attrName, attrValue);
+	}
 
 }

@@ -9,5 +9,5 @@ public interface EnrollmentRepository {
     List<Enrollment> getEnrollmentsByStudentId(String studentId);
     List<Enrollment> getWaitlistedEnrollmentsByCourseId(String courseId);
     boolean updateEnrollment(Enrollment enrollment);
-    boolean deleteEnrollment(String enrollmentId);
+//    boolean deleteEnrollment(String enrollmentId); i'll update status instead of deleting
 }

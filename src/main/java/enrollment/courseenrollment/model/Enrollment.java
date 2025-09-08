@@ -30,20 +30,18 @@ public class Enrollment {
 
     public Instant getWaitlistedAt() { return waitlistedAt; }
     public void setWaitlistedAt(String waitlistedAt) { this.waitlistedAt = Instant.parse(waitlistedAt); }
+    public void setWaitlistedAt(Instant waitlistedAt) { this.waitlistedAt = waitlistedAt; }
 
     public Instant getEnrolledAt() { return enrolledAt; }
     public void setEnrolledAt(String enrolledAt) { this.enrolledAt = Instant.parse(enrolledAt); }
-	public Instant getDroppedAt() {
-		return droppedAt;
-	}
-	public void setDroppedAt(String droppedAt) {
-		this.droppedAt = Instant.parse(droppedAt);
-	}
-	public Instant getOptedOutAt() {
-		return optedOutAt;
-	}
-	public void setOptedOutAt(String optedOutAt) {
-		this.optedOutAt = Instant.parse(optedOutAt);
-	}
+    public void setEnrolledAt(Instant enrolledAt) { this.enrolledAt = enrolledAt; }
+    
+	public Instant getDroppedAt() {return droppedAt;}
+	public void setDroppedAt(String droppedAt) {this.droppedAt = Instant.parse(droppedAt);}
+	public void setDroppedAt(Instant droppedAt) {this.droppedAt = droppedAt;}
+	
+	public Instant getOptedOutAt() {return optedOutAt;}
+	public void setOptedOutAt(String optedOutAt) {this.optedOutAt = Instant.parse(optedOutAt);}
+	public void setOptedOutAt(Instant optedOutAt) {this.optedOutAt = optedOutAt;}
 }
 

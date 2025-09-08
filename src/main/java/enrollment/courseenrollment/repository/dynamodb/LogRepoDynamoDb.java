@@ -2,6 +2,7 @@ package enrollment.courseenrollment.repository.dynamodb;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,14 +18,6 @@ public class LogRepoDynamoDb implements LogRepository {
 	@Override
 	public void createLog(StudentLog log) {
 	    Map<String, AttributeValue> item = new HashMap<>();
-
-	    
-	    item.put(StudentLogTableConstants.LOG_ID, 
-	             AttributeValue.builder().s(UUID.randomUUID().toString()).build());
-	    
-	    item.put(StudentLogTableConstants.TIMESTAMP, 
-	    		AttributeValue.builder().s(Instant.now().toString()).build());
-	    
 	    putIfNotNull(item, StudentLogTableConstants.STUDENT_ID, log.getStudentId());
 	    putIfNotNull(item, StudentLogTableConstants.COURSE_ID, log.getCourseId());
 	    putIfNotNull(item, StudentLogTableConstants.ACTION, log.getAction().toString());
@@ -47,6 +40,12 @@ public class LogRepoDynamoDb implements LogRepository {
 	    if (value != null) {
 	        map.put(key, AttributeValue.builder().s(value).build());
 	    }
+	}
+
+	@Override
+	public void batchCreateLogs(List<StudentLog> batch) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
