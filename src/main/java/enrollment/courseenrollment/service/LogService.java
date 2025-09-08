@@ -28,13 +28,14 @@ public class LogService {
 //        logRepo.createLog(log);
 //    }
     
+    //method will work in background in different thread
     public void logAction(StudentLog log) {
         log.setLogId(UUID.randomUUID().toString());
         log.setTimestamp(Instant.now());
-
+        
         CompletableFuture.runAsync(() -> {
             try {
-                logRepo.createLog(log); // single PutItem
+                logRepo.createLog(log);
             } catch (Exception e) {
                 System.err.println("Failed to write log: " + e.getMessage());
             }

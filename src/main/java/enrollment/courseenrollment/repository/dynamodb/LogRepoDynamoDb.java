@@ -42,11 +42,5 @@ public class LogRepoDynamoDb implements LogRepository {
 	    }
 	}
 
-	@Override
-	public void batchCreateLogs(List<StudentLog> batch) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 }

@@ -12,6 +12,8 @@ import enrollment.courseenrollment.repository.EnrollmentRepository;
 import enrollment.courseenrollment.repository.dynamodb.constants.EnrollementTableConstants;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
+import software.amazon.awssdk.services.dynamodb.model.GetItemResponse;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
@@ -52,6 +54,26 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 			return true;
 		} catch (Exception e) {
 			throw new DatabaseUnknownException("Unknown Error, Try Later");
+		}
+	}
+	
+
+	@Override
+	public Enrollment getEnrollmentByStudentAndCourse(String studentId, String courseId) {
+		GetItemRequest request = GetItemRequest.builder()
+				.tableName(EnrollementTableConstants.TABLE_NAME)
+				.key(Map.of(
+						EnrollementTableConstants.STUDENT_ID, AttributeValue.builder().s(studentId).build(),
+						EnrollementTableConstants.COURSE_ID,AttributeValue.builder().s(courseId).build()
+						))
+				.build();
+		try {
+			GetItemResponse response = client.getItem(request);
+			if(!response.hasItem()) 
+				return null;
+			return itemToEnrollment(response.item());
+		} catch (Exception e) {
+			throw new DatabaseUnknownException("Unknown Error , Try Later");
 		}
 	}
 
@@ -205,5 +227,6 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 		expr.append(attrName).append(" = :").append(attrName);
 		values.put(":" + attrName, attrValue);
 	}
+
 
 }

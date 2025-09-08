@@ -24,6 +24,7 @@ public class Enrollment {
 
     public EnrollmentStatus getStatus() { return status; }
     public void setStatus(String status) { this.status = EnrollmentStatus.valueOf(status); }
+    public void setStatus(EnrollmentStatus status) { this.status = status; }
 
     public Integer getPositionInWaitlist() { return positionInWaitlist; }
     public void setPositionInWaitlist(int positionInWaitlist) { this.positionInWaitlist = positionInWaitlist; }
