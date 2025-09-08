@@ -1,5 +1,5 @@
 package enrollment.courseenrollment.model.enums;
 
 public enum EnrollmentStatus {
-    ENROLLED, DROPPED, COMPLETED, WAITLISTED
+    ENROLLED, DROPPED, COMPLETED, WAITLISTED, OPTED_OUT
 }

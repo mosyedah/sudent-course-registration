@@ -1,6 +1,6 @@
 package enrollment.courseenrollment.repository.dynamodb;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -23,7 +23,7 @@ public class LogRepoDynamoDb implements LogRepository {
 	             AttributeValue.builder().s(UUID.randomUUID().toString()).build());
 	    
 	    item.put(StudentLogTableConstants.TIMESTAMP, 
-	    		AttributeValue.builder().s(LocalDateTime.now().toString()).build());
+	    		AttributeValue.builder().s(Instant.now().toString()).build());
 	    
 	    putIfNotNull(item, StudentLogTableConstants.STUDENT_ID, log.getStudentId());
 	    putIfNotNull(item, StudentLogTableConstants.COURSE_ID, log.getCourseId());

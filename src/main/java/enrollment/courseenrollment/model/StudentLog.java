@@ -1,6 +1,6 @@
 package enrollment.courseenrollment.model;
 
-import java.util.Date;
+import java.time.Instant;
 
 import enrollment.courseenrollment.model.enums.ActionType;
 
@@ -9,7 +9,7 @@ public class StudentLog {
     private String studentId;
     private String courseId;
     private ActionType action;
-    private Date timestamp;
+    private Instant timestamp;
     private String description;
 
     // Getters & Setters
@@ -25,8 +25,8 @@ public class StudentLog {
     public ActionType getAction() { return action; }
     public void setAction(ActionType action) { this.action = action; }
 
-    public Date getTimestamp() { return timestamp; }
-    public void setTimestamp(Date timestamp) { this.timestamp = timestamp; }
+    public Instant getTimestamp() { return timestamp; }
+    public void setTimestamp(Instant timestamp) { this.timestamp = timestamp; }
 	
     public String getDescription() { return description;}
 	public void setDescription(String description) { this.description = description;}

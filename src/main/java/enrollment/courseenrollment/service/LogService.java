@@ -1,6 +1,7 @@
 package enrollment.courseenrollment.service;
 
 import enrollment.courseenrollment.model.StudentLog;
+import enrollment.courseenrollment.model.enums.ActionType;
 import enrollment.courseenrollment.repository.LogRepository;
 import java.util.List;
 
@@ -14,10 +15,13 @@ public class LogService {
     }
 
     // Log an action for a student
-    public void logAction(String studentId, String action, String courseId) {
+    public void logAction(StudentLog log) {
         // TODO: create StudentLog object, set fields (studentId, action, courseId, timestamp)
         // TODO: call logRepo.createLog(...)
     }
+    
+  
+    
 
     // Get all logs for a student (optional)
     public List<StudentLog> getLogs(String studentId) {

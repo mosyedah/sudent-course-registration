@@ -129,6 +129,7 @@ public class TableInitialiser {
 	
 	/*
 	 * Im using StudentId + CourseId as primary key to prevent dup course enrollment
+	 * and GSI with courseId for faster pullup with particular courseId
 	 */
 	private static void createEnrollmentTable() {
 		
@@ -153,7 +154,31 @@ public class TableInitialiser {
 							.attributeType(ScalarAttributeType.S)
 							.build()
 							)
-					.provisionedThroughput(ProvisionedThroughput.builder()
+                    .globalSecondaryIndexes(
+                      GlobalSecondaryIndex.builder()
+                          .indexName(EnrollementTableConstants.COURSE_INDEX)
+                          .keySchema(
+                              KeySchemaElement.builder()
+                                  .attributeName(EnrollementTableConstants.COURSE_ID)
+                                  .keyType(KeyType.HASH) 
+                                  .build(),
+                              KeySchemaElement.builder()
+                                  .attributeName(EnrollementTableConstants.STUDENT_ID)
+                                  .keyType(KeyType.RANGE) // GSI sort key (optional)
+                                  .build()
+                          )
+                          .projection(Projection.builder()
+                              .projectionType(ProjectionType.ALL) 
+                              .build()
+                          )
+                          .provisionedThroughput(ProvisionedThroughput.builder()
+                              .readCapacityUnits(5L)
+                              .writeCapacityUnits(5L)
+                              .build()
+                          )
+                          .build()
+                    )
+                    .provisionedThroughput(ProvisionedThroughput.builder()
 							.readCapacityUnits(5L)
 							.writeCapacityUnits(5L)
 							.build()

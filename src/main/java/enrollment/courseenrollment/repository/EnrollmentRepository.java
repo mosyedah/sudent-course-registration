@@ -5,10 +5,9 @@ import java.util.List;
 import enrollment.courseenrollment.model.Enrollment;
 
 public interface EnrollmentRepository {
-    void createEnrollment(Enrollment enrollment);
-    Enrollment getEnrollmentById(String enrollmentId);
+    boolean createEnrollment(Enrollment enrollment);
     List<Enrollment> getEnrollmentsByStudentId(String studentId);
     List<Enrollment> getWaitlistedEnrollmentsByCourseId(String courseId);
-    void updateEnrollment(Enrollment enrollment);
-    void deleteEnrollment(String enrollmentId);
+    boolean updateEnrollment(Enrollment enrollment);
+    boolean deleteEnrollment(String enrollmentId);
 }

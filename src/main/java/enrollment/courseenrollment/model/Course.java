@@ -1,14 +1,15 @@
 package enrollment.courseenrollment.model;
 
-import java.util.Date;
+import java.time.Instant;
 
 public class Course {
     private String courseId;
     private String courseName;
     private int maxSeats;
-    private Date startDate;
-    private Date endDate;
-    private Date latestEnrollmentBy;
+    private int seatsFilled;
+    private Instant startDate;
+    private Instant endDate;
+    private Instant latestEnrollmentBy;
 
     // Getters & Setters
     public String getCourseId() { return courseId; }
@@ -20,13 +21,15 @@ public class Course {
     public int getMaxSeats() { return maxSeats; }
     public void setMaxSeats(int maxSeats) { this.maxSeats = maxSeats; }
 
-    public Date getStartDate() { return startDate; }
-    public void setStartDate(Date startDate) { this.startDate = startDate; }
+    public Instant getStartDate() { return startDate; }
+    public void setStartDate(Instant startDate) { this.startDate = startDate; }
 
-    public Date getEndDate() { return endDate; }
-    public void setEndDate(Date endDate) { this.endDate = endDate; }
+    public Instant getEndDate() { return endDate; }
+    public void setEndDate(Instant endDate) { this.endDate = endDate; }
 
-    public Date getLatestEnrollmentBy() { return latestEnrollmentBy; }
-    public void setLatestEnrollmentBy(Date latestEnrollmentBy) { this.latestEnrollmentBy = latestEnrollmentBy; }
+    public Instant getLatestEnrollmentBy() { return latestEnrollmentBy; }
+    public void setLatestEnrollmentBy(Instant latestEnrollmentBy) { this.latestEnrollmentBy = latestEnrollmentBy; }
+	public int getSeatsFilled() {return seatsFilled;}
+	public void setSeatsFilled(int seatsFilled) {this.seatsFilled = seatsFilled;}
 }
 

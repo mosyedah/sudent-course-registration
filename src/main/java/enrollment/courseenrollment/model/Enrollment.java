@@ -1,5 +1,6 @@
 package enrollment.courseenrollment.model;
 
+import java.time.Instant;
 import java.util.Date;
 
 import enrollment.courseenrollment.model.enums.EnrollmentStatus;
@@ -8,9 +9,11 @@ public class Enrollment {
     private String studentId;
     private String courseId;
     private EnrollmentStatus status;
-    private int positionInWaitlist;
-    private Date waitlistedAt;
-    private Date enrolledAt;
+    private Integer positionInWaitlist;
+    private Instant waitlistedAt;
+    private Instant enrolledAt;
+    private Instant droppedAt;
+    private Instant optedOutAt;
 
 
     public String getStudentId() { return studentId; }
@@ -20,15 +23,27 @@ public class Enrollment {
     public void setCourseId(String courseId) { this.courseId = courseId; }
 
     public EnrollmentStatus getStatus() { return status; }
-    public void setStatus(EnrollmentStatus status) { this.status = status; }
+    public void setStatus(String status) { this.status = EnrollmentStatus.valueOf(status); }
 
-    public int getPositionInWaitlist() { return positionInWaitlist; }
+    public Integer getPositionInWaitlist() { return positionInWaitlist; }
     public void setPositionInWaitlist(int positionInWaitlist) { this.positionInWaitlist = positionInWaitlist; }
 
-    public Date getWaitlistedAt() { return waitlistedAt; }
-    public void setWaitlistedAt(Date waitlistedAt) { this.waitlistedAt = waitlistedAt; }
+    public Instant getWaitlistedAt() { return waitlistedAt; }
+    public void setWaitlistedAt(String waitlistedAt) { this.waitlistedAt = Instant.parse(waitlistedAt); }
 
-    public Date getEnrolledAt() { return enrolledAt; }
-    public void setEnrolledAt(Date enrolledAt) { this.enrolledAt = enrolledAt; }
+    public Instant getEnrolledAt() { return enrolledAt; }
+    public void setEnrolledAt(String enrolledAt) { this.enrolledAt = Instant.parse(enrolledAt); }
+	public Instant getDroppedAt() {
+		return droppedAt;
+	}
+	public void setDroppedAt(String droppedAt) {
+		this.droppedAt = Instant.parse(droppedAt);
+	}
+	public Instant getOptedOutAt() {
+		return optedOutAt;
+	}
+	public void setOptedOutAt(String optedOutAt) {
+		this.optedOutAt = Instant.parse(optedOutAt);
+	}
 }
 

@@ -1,10 +1,14 @@
 package enrollment.courseenrollment.service;
 
 import enrollment.courseenrollment.model.Enrollment;
+
 import enrollment.courseenrollment.repository.EnrollmentRepository;
 import enrollment.courseenrollment.repository.LogRepository;
 import java.util.List;
 
+
+// to simplify not gonna use waitlist as different service, course covers all logic, 
+// hence duplicating here not ideal 
 public class WaitlistService {
 
     private final EnrollmentRepository enrollmentRepo;

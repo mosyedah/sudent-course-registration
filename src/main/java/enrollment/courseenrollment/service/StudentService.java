@@ -1,22 +1,22 @@
 package enrollment.courseenrollment.service;
 
 import enrollment.courseenrollment.model.Student;
+
 import enrollment.courseenrollment.model.StudentLog;
 import enrollment.courseenrollment.model.enums.ActionType;
 import enrollment.courseenrollment.exceptions.*;
 import java.util.UUID;
-import enrollment.courseenrollment.repository.LogRepository;
 import enrollment.courseenrollment.repository.StudentRepository;
 
 public class StudentService {
 
     private final StudentRepository studentRepo;
-    private final LogRepository logRepo;
+    private final LogService logService;
 
     // Constructor injection (SOLID friendly)
-    public StudentService(StudentRepository studentRepo, LogRepository logRepo) {
+    public StudentService(StudentRepository studentRepo, LogService logService) {
         this.studentRepo = studentRepo;
-        this.logRepo = logRepo;
+        this.logService = logService;
     }
 
     // Sign up a new student
@@ -98,7 +98,7 @@ public class StudentService {
     	log.setStudentId(studentId);
     	log.setAction(action);
     	log.setDescription(desc);
-    	logRepo.createLog(log);
+    	logService.logAction(log);
     }
     
 }
