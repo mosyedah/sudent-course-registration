@@ -2,6 +2,8 @@ package enrollment.courseenrollment.repository.dynamodb;
 
 import java.util.ArrayList;
 
+
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,8 +44,6 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 		if (enrollment.getOptedOutAt()!=null)
 			item.put(EnrollmentTableConstants.OPTED_OUT_AT, 
 					AttributeValue.builder().s(enrollment.getOptedOutAt().toString()).build());
-		PutItemRequest request = PutItemRequest.builder()
-				.tableName(EnrollmentTableConstants.TABLE_NAME).item(item).build();
 		
 		 try {
 		        if (enrollment.getStatus() == EnrollmentStatus.ENROLLED) {
@@ -214,7 +214,8 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 	   
 
 	    try {
-	    	if (EnrollmentStatus.DROPPED == enrollment.getStatus()) {
+	    	EnrollmentStatus status = enrollment.getStatus();
+	    	if (EnrollmentStatus.DROPPED == status || EnrollmentStatus.ENROLLED == status) {
 	    		// Enrollment Update
 				Update enrollmentUpdate = Update.builder()
 						.tableName(EnrollmentTableConstants.TABLE_NAME)
@@ -223,6 +224,21 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 						.expressionAttributeValues(expressionValues)
 						.expressionAttributeNames(expressionNames)
 						.build();
+				String conditionExpression;
+				Map<String, AttributeValue> courseExpressionValues = new HashMap<String, AttributeValue>();
+				Map<String, String> courseExpressionNames = new HashMap<String, String>();
+				if (status == EnrollmentStatus.DROPPED ) {
+					conditionExpression = "#seats > :zero";
+					courseExpressionNames.put("#seats", CourseTableConstants.SEATS_FILLED);
+					courseExpressionValues.put(":zero", AttributeValue.builder().n("0").build());
+					courseExpressionValues.put(":inc", AttributeValue.builder().n("-1").build());
+				}else {
+					conditionExpression = "#maxSeats > #seats";
+					courseExpressionNames.put("#maxSeats", CourseTableConstants.MAX_SEATS);
+					courseExpressionNames.put("#seats", CourseTableConstants.SEATS_FILLED);
+					courseExpressionValues.put(":inc", AttributeValue.builder().n("1").build());
+					
+				}
 				
 				// Build Update request for course seatsFilled
 	            Update courseUpdate = Update.builder()
@@ -232,14 +248,9 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 	                            AttributeValue.builder().s(enrollment.getCourseId()).build()
 	                    ))
 	                    .updateExpression("ADD #seats :inc")
-	                    .conditionExpression("#seats > :zero") 
-	                    .expressionAttributeValues(Map.of(
-	                            ":inc", AttributeValue.builder().n("-1").build(),
-	                            ":zero", AttributeValue.builder().n("0").build()
-	                    ))
-	                    .expressionAttributeNames(Map.of(
-	                    		"#seats" , CourseTableConstants.SEATS_FILLED
-	                    		))
+	                    .conditionExpression(conditionExpression) 
+	                    .expressionAttributeValues(courseExpressionValues)
+	                    .expressionAttributeNames(courseExpressionNames)
 	                    .build();
 	            
 	            TransactWriteItemsRequest writeItemsRequest = TransactWriteItemsRequest.builder()
@@ -251,7 +262,10 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 	            
 	            client.transactWriteItems(writeItemsRequest);
 	            		
-			}else {
+			}
+	    	
+	    	
+	    	else {
 				 UpdateItemRequest request = UpdateItemRequest.builder()
 				    		.tableName(EnrollmentTableConstants.TABLE_NAME)
 				    		.key(key)

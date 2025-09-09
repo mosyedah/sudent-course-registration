@@ -34,8 +34,9 @@ public class CourseController {
         List<Course> courses = courseService.viewAllCourses();
         System.out.println("\n--- Available Courses ---");
         for (Course c : courses) {
-            String seatInfo = c.getMaxSeats() > 0
-                    ? "Seats: " + courseService.getAvailableSeats(c.getCourseId()) + "/" + c.getMaxSeats()
+        	int seats = c.getMaxSeats() - c.getSeatsFilled();
+            String seatInfo = seats>0
+                    ? "Seats: " + seats + "/" + c.getMaxSeats()
                     : "Full";
             System.out.println(c.getCourseId() + " - " + c.getCourseName() + " (" + seatInfo + ")");
         }
@@ -100,14 +101,9 @@ public class CourseController {
 
         boolean enrolled = courseService.enroll(studentId, courseId);
         if (enrolled) {
-            System.out.println("Successfully applied for Course " + courseId + ".");
+            System.out.println("Successfully applied for Course " + courseId + " Refresh Page to check status.");
         } else {
-            boolean waitlisted = waitlistService.joinWaitlist(studentId, courseId);
-            if (waitlisted) {
-                System.out.println("Course is full. You are added to the waitlist for " + courseId + ".");
-            } else {
-                System.out.println("Enrollment failed. Invalid course or already enrolled.");
-            }
+            System.out.println("Enrollment failed. Invalid course or already enrolled."); 
         }
     }
 

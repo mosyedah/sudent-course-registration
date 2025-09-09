@@ -19,13 +19,11 @@ public class StudentService {
         this.logService = logService;
     }
 
-    // Sign up a new student
+    // Sign up a new student . Throws EMailAlreadyExistsException if email exists 
     public Student signUp(Student student) {
     	// TODO: validation, call studentRepo.createStudent(student)
     	// TODO: add Student ID unique to student.studentId
     	// TODO: log action using logRepo.createLog(...)
-    	// UUID im using , still in rare case if uuid was not unique second try should suffice
-    	for (int i = 0; i < 2; i++) {
     		try {
     			if( studentRepo.getStudentByEmail(student.getEmail()) != null )
     				throw new EmailAlreadyExistsException("Email Already Exists");
@@ -34,14 +32,10 @@ public class StudentService {
     			String desc  = String.format("Name : %s , Email : %s", student.getName(), student.getEmail());
     			logRecord(student.getStudentId(), ActionType.SIGN_UP,desc);
     			return student;
-    		} catch (StudentIDAlreadyExistsException e) {
-    			student.setStudentId(UUID.randomUUID().toString());
-    		}
+    		} 
     		catch (DatabaseUnknownException e) {
     			throw new DatabaseUnknownException(e.getMessage());
     		}	
-		}
-    	return null;
     }
 
     // Login by email + password hash

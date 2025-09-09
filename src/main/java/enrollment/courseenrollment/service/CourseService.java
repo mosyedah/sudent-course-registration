@@ -26,12 +26,17 @@ public class CourseService {
     private final CourseRepository courseRepo;
     private final EnrollmentRepository enrollmentRepo;
     private final LogService logService;
+    private final WaitlistService waitlistService;
 
     // Constructor injection
-    public CourseService(CourseRepository courseRepo, EnrollmentRepository enrollmentRepo, LogService logService) {
+    public CourseService(CourseRepository courseRepo, 
+    		EnrollmentRepository enrollmentRepo,
+    		LogService logService,
+    		WaitlistService waitlistService) {
         this.courseRepo = courseRepo;
         this.enrollmentRepo = enrollmentRepo;
         this.logService = logService;
+        this.waitlistService = waitlistService;
     }
 
     // View all courses
@@ -60,7 +65,8 @@ public class CourseService {
     	
     	//constraints check, max 5 active courses, Max 3 waitlists per student 
     	
-    	if (isSeatAvailable(course)) {
+    	int waitlistCount = enrollmentRepo.getWaitlistedEnrollmentsByCourseId(courseId).size();
+    	if (isSeatAvailable(course) && waitlistCount==0) {
 			if (!canActiveEnrollStudent(studentId))
 					throw new MaxEnrollmentsLimitReachedException("Max 5 courses can be actively enrolled");
 			enrollment = new Enrollment();
@@ -81,7 +87,6 @@ public class CourseService {
 			enrollment.setStudentId(studentId);
 			enrollment.setCourseId(courseId);
 			enrollment.setStatus(EnrollmentStatus.WAITLISTED);
-			int waitlistCount = enrollmentRepo.getWaitlistedEnrollmentsByCourseId(courseId).size();
 			enrollment.setPositionInWaitlist(waitlistCount+1);
 			enrollment.setWaitlistedAt(Instant.now());
 			
@@ -136,7 +141,8 @@ public class CourseService {
         }
         
     	if( !enrollmentRepo.updateEnrollment(enrollment)) return false;
-    	
+    	//notify of a drop and let the waitlist handle changes in async manner
+    	waitlistService.notifyWaitlistServiceOfDrop(courseId , actionType);
         // TODO: log action
     	logEnrollment(enrollment, actionType);
     	return true;
@@ -180,12 +186,5 @@ public class CourseService {
 		log.setAction(action);
 		logService.logAction(log);
 	}
-	// Process when a seat opens in a course
-    public void processSeatOpen(String courseId) {
-        // TODO: fetch waitlisted enrollments by courseId
-        // TODO: promote first in waitlist to ENROLLED
-        // TODO: update positions of remaining waitlisted students
-        // TODO: save updates via enrollmentRepo.updateEnrollment(...)
-        // TODO: log actions
-    }
+	
 }

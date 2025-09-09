@@ -1,7 +1,6 @@
 package enrollment.courseenrollment.model;
 
 import java.time.Instant;
-import java.util.Date;
 
 import enrollment.courseenrollment.model.enums.EnrollmentStatus;
 

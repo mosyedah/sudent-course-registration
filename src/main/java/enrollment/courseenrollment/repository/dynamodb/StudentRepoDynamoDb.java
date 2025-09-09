@@ -1,8 +1,10 @@
 package enrollment.courseenrollment.repository.dynamodb;
 
 import java.util.Map;
+
 import enrollment.courseenrollment.exceptions.DatabaseUnknownException;
-import enrollment.courseenrollment.exceptions.StudentIDAlreadyExistsException;
+import enrollment.courseenrollment.exceptions.EmailAlreadyExistsException;
+import enrollment.courseenrollment.exceptions.StudentNotFoundException;
 import enrollment.courseenrollment.model.Student;
 import enrollment.courseenrollment.repository.StudentRepository;
 import enrollment.courseenrollment.repository.dynamodb.constants.StudentTableConstants;
@@ -22,15 +24,15 @@ public class StudentRepoDynamoDb implements StudentRepository {
 							StudentTableConstants.EMAIL, AttributeValue.builder().s(student.getEmail()).build(),
 							StudentTableConstants.PASSWORD_HASH, AttributeValue.builder().s(student.getPasswordHash()).build()
 							))
-					.conditionExpression("attribute_not_exists(#pk)")
+					.conditionExpression("attribute_not_exists(#email) ")
 					.expressionAttributeNames(Map.of(
-							"#pk", StudentTableConstants.STUDENT_ID))
+							"#email", StudentTableConstants.EMAIL))
 					.build();
 			client.putItem(request);
 			return true;
 		}
 		catch (ConditionalCheckFailedException e) {
-			throw new StudentIDAlreadyExistsException("StudentId Exists, generate new one");
+			throw new EmailAlreadyExistsException("Email Already Exists");
 		}
 		catch (Exception e) {
 			throw new DatabaseUnknownException("Unknown Error, Try again");
@@ -122,13 +124,19 @@ public class StudentRepoDynamoDb implements StudentRepository {
 				.tableName(StudentTableConstants.TABLE_NAME)
 				.key(Map.of(StudentTableConstants.STUDENT_ID,AttributeValue.builder().s(studentId).build()))
 				.updateExpression("Set #pass = :passwordHash")
+				.conditionExpression("attribute_exists(#studentId)")
 				.expressionAttributeValues(Map.of(":passwordHash", AttributeValue.builder().s(passwordHash).build()))
-				.expressionAttributeNames(Map.of("#pass",StudentTableConstants.PASSWORD_HASH))
+				.expressionAttributeNames(Map.of("#pass",StudentTableConstants.PASSWORD_HASH,
+						"#studentId", StudentTableConstants.STUDENT_ID))
 				.build();
 		try {
 			client.updateItem(request);
 			return true;
-		} catch (Exception e) {
+		} catch (ConditionalCheckFailedException e) {
+			throw new StudentNotFoundException("Student Does not Exists");
+		}
+		
+		catch (Exception e) {
 			throw new DatabaseUnknownException("Unknown Error , Try Again");
 		}
 	}
