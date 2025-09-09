@@ -135,35 +135,35 @@ public class TableInitialiser {
 		
 		try {
 			CreateTableRequest request = CreateTableRequest.builder()
-					.tableName(EnrollementTableConstants.TABLE_NAME)
+					.tableName(EnrollmentTableConstants.TABLE_NAME)
 					.keySchema(KeySchemaElement.builder()
-							.attributeName(EnrollementTableConstants.STUDENT_ID)
+							.attributeName(EnrollmentTableConstants.STUDENT_ID)
 							.keyType(KeyType.HASH)
 							.build(),
 							KeySchemaElement.builder()
-							.attributeName(EnrollementTableConstants.COURSE_ID)
+							.attributeName(EnrollmentTableConstants.COURSE_ID)
 							.keyType(KeyType.RANGE)
 							.build()
 							)							
 					.attributeDefinitions(AttributeDefinition.builder()
-							.attributeName(EnrollementTableConstants.STUDENT_ID)
+							.attributeName(EnrollmentTableConstants.STUDENT_ID)
 							.attributeType(ScalarAttributeType.S)
 							.build(),
 							AttributeDefinition.builder()
-							.attributeName(EnrollementTableConstants.COURSE_ID)
+							.attributeName(EnrollmentTableConstants.COURSE_ID)
 							.attributeType(ScalarAttributeType.S)
 							.build()
 							)
                     .globalSecondaryIndexes(
                       GlobalSecondaryIndex.builder()
-                          .indexName(EnrollementTableConstants.COURSE_INDEX)
+                          .indexName(EnrollmentTableConstants.COURSE_INDEX)
                           .keySchema(
                               KeySchemaElement.builder()
-                                  .attributeName(EnrollementTableConstants.COURSE_ID)
+                                  .attributeName(EnrollmentTableConstants.COURSE_ID)
                                   .keyType(KeyType.HASH) 
                                   .build(),
                               KeySchemaElement.builder()
-                                  .attributeName(EnrollementTableConstants.STUDENT_ID)
+                                  .attributeName(EnrollmentTableConstants.STUDENT_ID)
                                   .keyType(KeyType.RANGE) // GSI sort key (optional)
                                   .build()
                           )

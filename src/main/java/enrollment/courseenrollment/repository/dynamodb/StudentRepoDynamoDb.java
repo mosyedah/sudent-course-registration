@@ -65,7 +65,10 @@ public class StudentRepoDynamoDb implements StudentRepository {
 		QueryRequest request = QueryRequest.builder()
 				.tableName(StudentTableConstants.TABLE_NAME)
 				.indexName(StudentTableConstants.EMAIL_INDEX)
-				.keyConditionExpression("email = :email")
+				.keyConditionExpression("#email = :email")
+				.expressionAttributeNames(Map.of(
+						"#email", StudentTableConstants.EMAIL
+						))
 				.expressionAttributeValues(Map.of(":email" , AttributeValue.fromS(email)))
 				.build();
 		try {
@@ -91,8 +94,11 @@ public class StudentRepoDynamoDb implements StudentRepository {
 				.tableName(StudentTableConstants.TABLE_NAME)
 				.key(Map.of(StudentTableConstants.STUDENT_ID,
 						AttributeValue.builder().s(student.getStudentId()).build()))
-				.updateExpression("Set #n = :name ,"+StudentTableConstants.EMAIL+" = :email")
-				.expressionAttributeNames(Map.of("#n", StudentTableConstants.NAME))
+				.updateExpression("Set #n = :name , #email = :email")
+				.expressionAttributeNames(Map.of(
+						"#n", StudentTableConstants.NAME,
+						"#email", StudentTableConstants.EMAIL
+						))
 				.expressionAttributeValues(Map.of(
 						":name", AttributeValue.builder().s(student.getName()).build(),
 						":email" , AttributeValue.builder().s(student.getEmail()).build()
@@ -115,8 +121,9 @@ public class StudentRepoDynamoDb implements StudentRepository {
 		UpdateItemRequest request = UpdateItemRequest.builder()
 				.tableName(StudentTableConstants.TABLE_NAME)
 				.key(Map.of(StudentTableConstants.STUDENT_ID,AttributeValue.builder().s(studentId).build()))
-				.updateExpression("Set "+StudentTableConstants.PASSWORD_HASH+" = :passwordHash")
+				.updateExpression("Set #pass = :passwordHash")
 				.expressionAttributeValues(Map.of(":passwordHash", AttributeValue.builder().s(passwordHash).build()))
+				.expressionAttributeNames(Map.of("#pass",StudentTableConstants.PASSWORD_HASH))
 				.build();
 		try {
 			client.updateItem(request);

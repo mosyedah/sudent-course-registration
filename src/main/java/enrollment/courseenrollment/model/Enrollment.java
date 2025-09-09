@@ -28,6 +28,7 @@ public class Enrollment {
 
     public Integer getPositionInWaitlist() { return positionInWaitlist; }
     public void setPositionInWaitlist(int positionInWaitlist) { this.positionInWaitlist = positionInWaitlist; }
+    public void setPositionInWaitlist(Integer positionInWaitlist) { this.positionInWaitlist = positionInWaitlist; }
 
     public Instant getWaitlistedAt() { return waitlistedAt; }
     public void setWaitlistedAt(String waitlistedAt) { this.waitlistedAt = Instant.parse(waitlistedAt); }

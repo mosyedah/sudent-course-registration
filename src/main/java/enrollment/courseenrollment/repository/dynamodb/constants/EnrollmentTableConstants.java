@@ -1,7 +1,7 @@
 package enrollment.courseenrollment.repository.dynamodb.constants;
 
-public class EnrollementTableConstants {
-	private EnrollementTableConstants() {
+public class EnrollmentTableConstants {
+	private EnrollmentTableConstants() {
 		// prevent Instance
 	}
 	

@@ -2,14 +2,16 @@ package enrollment.courseenrollment.service;
 
 import enrollment.courseenrollment.exceptions.CourseAlreadyAppliedException;
 import enrollment.courseenrollment.exceptions.CourseStartDateHasPassedException;
+import enrollment.courseenrollment.exceptions.DropNotAllowedAfterCourseEndDateException;
+import enrollment.courseenrollment.exceptions.DropNotAllowedForEnrollmentStatusException;
 import enrollment.courseenrollment.exceptions.MaxEnrollmentsLimitReachedException;
 import enrollment.courseenrollment.exceptions.MaxWaitlistedLimitReachedException;
+import enrollment.courseenrollment.exceptions.StudentNotEnrolledForThisCourseException;
 import enrollment.courseenrollment.model.Course;
 import enrollment.courseenrollment.model.Enrollment;
 import enrollment.courseenrollment.model.StudentLog;
 import enrollment.courseenrollment.repository.CourseRepository;
 import enrollment.courseenrollment.repository.EnrollmentRepository;
-import enrollment.courseenrollment.repository.LogRepository;
 import enrollment.courseenrollment.model.enums.ActionType;
 import enrollment.courseenrollment.model.enums.EnrollmentStatus;
 
@@ -36,17 +38,21 @@ public class CourseService {
     public List<Course> viewAllCourses() {
         return courseRepo.getAllCourses();
     }
+    
+    public Course getCourseById(String courseId) {
+    	return courseRepo.getCourseById(courseId);
+    }
 
     // Enroll student in course
     public boolean enroll(String studentId, String courseId) {
     	
     	// TODO: check if studentId+courseId exists , if exists check if it is optedOut proceed with PutItem
     	Course course = courseRepo.getCourseById(courseId);
-    	if (isDateInFuture(course.getStartDate()))
+    	if (!isDateInFuture(course.getStartDate()))
     		throw new CourseStartDateHasPassedException("Course Start Date Passed CourseID : " + courseId);
     	Enrollment enrollment  = enrollmentRepo.getEnrollmentByStudentAndCourse(studentId, courseId);
     	if (enrollment != null) {
-			if (enrollment.getStatus() != EnrollmentStatus.OPTED_OUT) {
+			if (enrollment.getStatus() != EnrollmentStatus.OPTED_OUT) {//opted out students can re apply
 				throw new CourseAlreadyAppliedException("Course Already Applied CourseID :"+ courseId);
 			}
 		}
@@ -54,90 +60,107 @@ public class CourseService {
     	
     	//constraints check, max 5 active courses, Max 3 waitlists per student 
     	
-    	List<Enrollment> studentEnrollments = enrollmentRepo.getEnrollmentsByStudentId(studentId);
     	if (isSeatAvailable(course)) {
-			if (!canActiveEnrollStudent(studentEnrollments))
+			if (!canActiveEnrollStudent(studentId))
 					throw new MaxEnrollmentsLimitReachedException("Max 5 courses can be actively enrolled");
 			enrollment = new Enrollment();
 			enrollment.setStudentId(studentId);
 			enrollment.setCourseId(courseId);
 			enrollment.setStatus(EnrollmentStatus.ENROLLED);
 			enrollment.setEnrolledAt(Instant.now());
-			enrollmentRepo.createEnrollment(enrollment);
-			
+			if( !enrollmentRepo.createEnrollment(enrollment)) // updates course seatfill count as well, using Transaction
+				return false;
 			// logging 
 			logEnrollment(enrollment, ActionType.ENROLL);
 			
 			return true;
 		}else {
-			if (!canWaitlistStudent(studentEnrollments)) 
+			if (!canWaitlistStudent(studentId)) 
 				throw new MaxWaitlistedLimitReachedException("Max 3 course can be waitlisted");
 			enrollment  = new Enrollment();
 			enrollment.setStudentId(studentId);
 			enrollment.setCourseId(courseId);
 			enrollment.setStatus(EnrollmentStatus.WAITLISTED);
-			enrollment.setStatus(EnrollmentStatus.WAITLISTED);
+			int waitlistCount = enrollmentRepo.getWaitlistedEnrollmentsByCourseId(courseId).size();
+			enrollment.setPositionInWaitlist(waitlistCount+1);
+			enrollment.setWaitlistedAt(Instant.now());
+			
+			if(!enrollmentRepo.createEnrollment(enrollment)) return false;
+			
+			logEnrollment(enrollment, ActionType.WAITLISTED);
+			
+			return true;
+			
+			
 		}
     	
         // TODO: check seat availability, create Enrollment (ENROLLED or WAITLISTED)
         // TODO: save using enrollmentRepo.createEnrollment(...)
         // TODO: log action using logRepo.createLog(...)
     	
-    	
-    	return false;
     }
 
     // Drop student from course
     public boolean drop(String studentId, String courseId) {
     	// TODO: fetch enrollment by studentId + courseId
-        // TODO: if not present throw error, if present status shoudl be Enrolled/waitlisted throw error
-        // TODO: update status to DROPPED/OPTEDOUT if student is currently enrolled / Waitlisted else throw exception
-        // TODO: update enrollmentRepo
+    	Course course = courseRepo.getCourseById(courseId);
+    	Enrollment enrollment = enrollmentRepo.getEnrollmentByStudentAndCourse(studentId, courseId);
+    	// TODO: if not present throw error, if present status shoudl be Enrolled/waitlisted throw error
+    	if (enrollment == null)
+    		throw new StudentNotEnrolledForThisCourseException("You're Not enrolled in this course, CourseId : "+ courseId);
+    	
+    	if (!isDateInFuture(course.getEndDate())) 
+    		throw new DropNotAllowedAfterCourseEndDateException("Drop Not Allowed As Course Already Ended, CourseId  : "+courseId);
+    	
+    	EnrollmentStatus status = enrollment.getStatus();
+    	if (status != EnrollmentStatus.ENROLLED && status != EnrollmentStatus.WAITLISTED) {
+		}
+    	
+    	// TODO: update status to DROPPED/OPTEDOUT if student is currently enrolled / Waitlisted else throw exception
+        ActionType actionType;
+        
+        switch (status) {
+		case ENROLLED: 
+			enrollment.setStatus(EnrollmentStatus.DROPPED);
+			enrollment.setDroppedAt(Instant.now());
+			actionType = ActionType.DROP;
+			break;
+		case WAITLISTED:
+			enrollment.setStatus(EnrollmentStatus.OPTED_OUT);
+			enrollment.setOptedOutAt(Instant.now());
+			enrollment.setPositionInWaitlist(null);
+			actionType = ActionType.OPTED_OUT;
+			break;
+		default:
+			throw new DropNotAllowedForEnrollmentStatusException("Drop Not Allowed For Current Enrollment Status");	
+        }
+        
+    	if( !enrollmentRepo.updateEnrollment(enrollment)) return false;
+    	
         // TODO: log action
-    	return false;
-    }
-
-    // Check if seats are available in a course
-    public boolean checkSeatAvailability(String courseId) {
-        // TODO: fetch course, count current ENROLLED enrollments, compare with maxSeats
-        return false;
+    	logEnrollment(enrollment, actionType);
+    	return true;
     }
     
     // return list of courses enrolled by student
 	public List<Enrollment> getEnrollmentsByStudentId(String studentId) {
 		// TODO Auto-generated method stub
-		return null;
+		return enrollmentRepo.getEnrollmentsByStudentId(studentId);
 	}
 
-	public int getAvailableSeats(String courseId) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 	
 	private boolean isSeatAvailable(Course course) {
 		return (course.getMaxSeats() - course.getSeatsFilled()) >0;
 	}
 	
-	private boolean canActiveEnrollStudent(List<Enrollment> enrollments) {
-	    int count = 0;
-	    for (Enrollment e : enrollments) {
-	        if (e.getStatus() == EnrollmentStatus.ENROLLED) {
-	            count++;
-	            if (count >= 5) return false;
-	        }
-	    }
-	    return true;
+	private boolean canActiveEnrollStudent(String studentId) {
+	    // max 5 active enrolls
+	    return enrollmentRepo.getEnrollmentCountByStudentIdAndStatus(studentId, EnrollmentStatus.ENROLLED) < 5;
 	}
 
-	private boolean canWaitlistStudent(List<Enrollment> enrollments) {
-	    int count = 0;
-	    for (Enrollment e : enrollments) {
-	        if (e.getStatus() == EnrollmentStatus.WAITLISTED) {
-	            count++;
-	            if (count >= 3) return false;
-	        }
-	    }
-	    return true;
+	private boolean canWaitlistStudent(String studentId) {
+	   // max 3 waitlists
+	    return enrollmentRepo.getEnrollmentCountByStudentIdAndStatus(studentId, EnrollmentStatus.WAITLISTED) < 3;
 	}
 	
 	private boolean isDateInFuture(Instant instant) {
