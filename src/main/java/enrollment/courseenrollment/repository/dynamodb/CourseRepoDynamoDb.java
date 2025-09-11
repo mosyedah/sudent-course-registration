@@ -17,7 +17,7 @@ import software.amazon.awssdk.services.dynamodb.model.GetItemResponse;
 import software.amazon.awssdk.services.dynamodb.model.ScanRequest;
 import software.amazon.awssdk.services.dynamodb.model.ScanResponse;
 
-public class CourseRepositoryDynamoDb implements CourseRepository{
+public class CourseRepoDynamoDb implements CourseRepository{
 	private static final DynamoDbClient client = DynamoDbConfig.getClient();
 	@Override
 	public Course getCourseById(String courseId) {

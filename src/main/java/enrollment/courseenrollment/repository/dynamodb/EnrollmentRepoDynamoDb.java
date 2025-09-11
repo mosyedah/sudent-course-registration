@@ -44,6 +44,9 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 		if (enrollment.getOptedOutAt()!=null)
 			item.put(EnrollmentTableConstants.OPTED_OUT_AT, 
 					AttributeValue.builder().s(enrollment.getOptedOutAt().toString()).build());
+		if (enrollment.getWithdrawnAt()!=null)
+			item.put(EnrollmentTableConstants.WITHDRAWN_AT, 
+					AttributeValue.builder().s(enrollment.getWithdrawnAt().toString()).build());
 		
 		 try {
 		        if (enrollment.getStatus() == EnrollmentStatus.ENROLLED) {
@@ -208,6 +211,10 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 	    appendUpdateField(updateExpression, expressionValues,expressionNames,
 	            EnrollmentTableConstants.OPTED_OUT_AT,
 	            enrollment.getOptedOutAt() != null ? AttributeValue.builder().s(enrollment.getOptedOutAt().toString()).build() : null);
+	   
+	    appendUpdateField(updateExpression, expressionValues,expressionNames,
+	    		EnrollmentTableConstants.WITHDRAWN_AT,
+	    		enrollment.getOptedOutAt() != null ? AttributeValue.builder().s(enrollment.getWithdrawnAt().toString()).build() : null);
 
 	    if (expressionValues.isEmpty()) return false;
 	    
@@ -215,7 +222,7 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 
 	    try {
 	    	EnrollmentStatus status = enrollment.getStatus();
-	    	if (EnrollmentStatus.DROPPED == status || EnrollmentStatus.ENROLLED == status) {
+	    	if (EnrollmentStatus.WITHDRAWN == status || EnrollmentStatus.ENROLLED == status) {
 	    		// Enrollment Update
 				Update enrollmentUpdate = Update.builder()
 						.tableName(EnrollmentTableConstants.TABLE_NAME)
@@ -227,12 +234,12 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 				String conditionExpression;
 				Map<String, AttributeValue> courseExpressionValues = new HashMap<String, AttributeValue>();
 				Map<String, String> courseExpressionNames = new HashMap<String, String>();
-				if (status == EnrollmentStatus.DROPPED ) {
+				if (status == EnrollmentStatus.WITHDRAWN ) {
 					conditionExpression = "#seats > :zero";
 					courseExpressionNames.put("#seats", CourseTableConstants.SEATS_FILLED);
 					courseExpressionValues.put(":zero", AttributeValue.builder().n("0").build());
-					courseExpressionValues.put(":inc", AttributeValue.builder().n("0").build());
-					// dropped means seat was occupied , will still count as seat sold.
+					courseExpressionValues.put(":inc", AttributeValue.builder().n("-1").build());
+					// withdrawn means seat is available for resell 
 				}else {
 					conditionExpression = "#maxSeats > #seats";
 					courseExpressionNames.put("#maxSeats", CourseTableConstants.MAX_SEATS);
@@ -346,6 +353,11 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 	    AttributeValue optedOutAtAttr = item.get(EnrollmentTableConstants.OPTED_OUT_AT);
 	    if (optedOutAtAttr != null && optedOutAtAttr.s() != null) {
 	        enrollment.setOptedOutAt(optedOutAtAttr.s());
+	    }
+	    
+	    AttributeValue withdrawnAtAttr = item.get(EnrollmentTableConstants.WITHDRAWN_AT);
+	    if (withdrawnAtAttr != null && withdrawnAtAttr.s() != null) {
+	    	enrollment.setWithdrawnAt(withdrawnAtAttr.s());
 	    }
 
 	    return enrollment;

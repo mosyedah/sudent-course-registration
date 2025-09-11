@@ -13,6 +13,7 @@ public class Enrollment {
     private Instant enrolledAt;
     private Instant droppedAt;
     private Instant optedOutAt;
+    private Instant withdrawnAt;
 
 
     public String getStudentId() { return studentId; }
@@ -44,5 +45,9 @@ public class Enrollment {
 	public Instant getOptedOutAt() {return optedOutAt;}
 	public void setOptedOutAt(String optedOutAt) {this.optedOutAt = Instant.parse(optedOutAt);}
 	public void setOptedOutAt(Instant optedOutAt) {this.optedOutAt = optedOutAt;}
+	
+	public Instant getWithdrawnAt() {return withdrawnAt;}
+	public void setWithdrawnAt(Instant withdrawnAt) {this.withdrawnAt = withdrawnAt;}
+	public void setWithdrawnAt(String withdrawnAt) {this.withdrawnAt = Instant.parse(withdrawnAt);}
 }
 

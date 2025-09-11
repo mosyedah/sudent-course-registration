@@ -15,6 +15,7 @@ public class EnrollmentTableConstants {
 	public static final String ENROLLED_AT = "enrolledAt";
 	public static final String DROPPED_AT = "droppedAt";
 	public static final String OPTED_OUT_AT = "optedOutAt";
+	public static final String WITHDRAWN_AT = "optedOutAt";
 	
 	
 }

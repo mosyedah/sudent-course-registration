@@ -54,9 +54,9 @@ public class MainController {
 
     private void showFrontDeskMenu() {
         System.out.println("\n=====================");
-        System.out.println("Atlas Institute");
+        System.out.println("    Atlas Institute");
         System.out.println("=====================");
-        System.out.println("Welcome to Front Desk, My Name is Aarti, How may I help?");
+        System.out.println("Welcome to Front Desk, My Name is Aarti and I'm , How may I help? ");
         System.out.println("1. I want to Signup as Student");
         System.out.println("2. I’m already a student, I want to login");
         System.out.println("3. I just came to check how are you, I’ll go now");

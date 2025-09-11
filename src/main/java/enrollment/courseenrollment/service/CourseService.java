@@ -121,6 +121,7 @@ public class CourseService {
     	
     	EnrollmentStatus status = enrollment.getStatus();
     	if (status != EnrollmentStatus.ENROLLED && status != EnrollmentStatus.WAITLISTED) {
+    		throw new DropNotAllowedForEnrollmentStatusException("Drop Now Allowed for Current Status , CourseId : "+ courseId);
 		}
     	
     	// TODO: update status to DROPPED/OPTEDOUT if student is currently enrolled / Waitlisted else throw exception
@@ -128,9 +129,15 @@ public class CourseService {
         
         switch (status) {
 		case ENROLLED: 
-			enrollment.setStatus(EnrollmentStatus.DROPPED);
-			enrollment.setDroppedAt(Instant.now());
-			actionType = ActionType.DROP;
+			if (isDateInFuture(course.getLatestEnrollmentBy())) {
+				enrollment.setStatus(EnrollmentStatus.WITHDRAWN);
+				enrollment.setWithdrawnAt(Instant.now());
+				actionType = ActionType.WITHDRAWN;								
+			}else {
+				enrollment.setStatus(EnrollmentStatus.DROPPED);
+				enrollment.setDroppedAt(Instant.now());
+				actionType = ActionType.DROP;				
+			}
 			break;
 		case WAITLISTED:
 			enrollment.setStatus(EnrollmentStatus.OPTED_OUT);

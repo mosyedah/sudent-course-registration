@@ -42,7 +42,7 @@ public class WaitlistService {
             if (actionType == ActionType.OPTED_OUT) {
                 // If student opted out, just update remaining waitlist positions
                 updateWaitlistPositions(courseId);
-            } else if (actionType == ActionType.DROP) {
+            } else if (actionType == ActionType.WITHDRAWN) {
                 // Promote first waitlisted student to ENROLLED
                 List<Enrollment> waitlist = enrollmentRepo.getWaitlistedEnrollmentsByCourseId(courseId);
                 Course course = courseRepo.getCourseById(courseId);
@@ -101,5 +101,7 @@ public class WaitlistService {
     	log.setCourseId(enrollment.getCourseId());
     	log.setStudentId(enrollment.getStudentId());
         logService.logAction(log);
+        
+       
     }
 }
