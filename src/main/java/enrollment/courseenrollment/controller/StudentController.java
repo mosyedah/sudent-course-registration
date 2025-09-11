@@ -46,12 +46,11 @@ public class StudentController {
             return;
         }
 
-        String passwordHash = InputUtils.hashPassword(password);
 
         Student student = new Student();
         student.setName(name);
         student.setEmail(email);
-        student.setPasswordHash(passwordHash);
+        student.setPasswordHash(password);
 
         student = studentService.signUp(student);
         if (student!=null) {
@@ -72,9 +71,8 @@ public class StudentController {
         String email = scanner.nextLine();
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
-        String passwordHash = InputUtils.hashPassword(password);
 
-        Student student = studentService.login(email, passwordHash);
+        Student student = studentService.login(email, password);
         if (student != null) {
             System.out.println("Thank you for details, now you’re logged in.");
             this.loggedInStudent = student;
@@ -143,7 +141,7 @@ public class StudentController {
         }
 
         boolean success = studentService.changePassword(loggedInStudent.getStudentId(),
-                InputUtils.hashPassword(newPassword));
+               newPassword);
 
         if (success) {
             System.out.println("Password changed successfully.");

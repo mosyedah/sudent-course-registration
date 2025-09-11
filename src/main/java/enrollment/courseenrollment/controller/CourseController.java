@@ -16,12 +16,10 @@ import java.util.Scanner;
 public class CourseController {
 
     private final CourseService courseService;
-    private final WaitlistService waitlistService;
     private final Scanner scanner;
 
-    public CourseController(CourseService courseService, WaitlistService waitlistService) {
+    public CourseController(CourseService courseService) {
         this.courseService = courseService;
-        this.waitlistService = waitlistService;
         this.scanner = new Scanner(System.in);
     }
 

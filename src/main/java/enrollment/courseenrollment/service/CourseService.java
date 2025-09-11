@@ -1,7 +1,7 @@
 package enrollment.courseenrollment.service;
 
 import enrollment.courseenrollment.exceptions.CourseAlreadyAppliedException;
-import enrollment.courseenrollment.exceptions.CourseStartDateHasPassedException;
+import enrollment.courseenrollment.exceptions.CourseEnrollmentDateHasPassedException;
 import enrollment.courseenrollment.exceptions.DropNotAllowedAfterCourseEndDateException;
 import enrollment.courseenrollment.exceptions.DropNotAllowedForEnrollmentStatusException;
 import enrollment.courseenrollment.exceptions.MaxEnrollmentsLimitReachedException;
@@ -53,9 +53,11 @@ public class CourseService {
     	
     	// TODO: check if studentId+courseId exists , if exists check if it is optedOut proceed with PutItem
     	Course course = courseRepo.getCourseById(courseId);
-    	if (!isDateInFuture(course.getStartDate()))
-    		throw new CourseStartDateHasPassedException("Course Start Date Passed CourseID : " + courseId);
+    	if (!isDateInFuture(course.getLatestEnrollmentBy()))
+    		throw new CourseEnrollmentDateHasPassedException("Course Already St : " + courseId);
+    	
     	Enrollment enrollment  = enrollmentRepo.getEnrollmentByStudentAndCourse(studentId, courseId);
+    	
     	if (enrollment != null) {
 			if (enrollment.getStatus() != EnrollmentStatus.OPTED_OUT) {//opted out students can re apply
 				throw new CourseAlreadyAppliedException("Course Already Applied CourseID :"+ courseId);

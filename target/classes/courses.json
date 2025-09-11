@@ -1,0 +1,93 @@
+[
+    {
+      "courseId": "CS101",
+      "courseName": "Java Basics",
+      "maxSeats": 5,
+      "seatsFilled": 5,
+      "startDate": "2025-01-01T00:00:00Z",
+      "endDate": "2025-02-01T00:00:00Z",
+      "latestEnrollmentBy": "2024-12-25T00:00:00Z"
+    },
+    {
+      "courseId": "CS102",
+      "courseName": "Advanced Java",
+      "maxSeats": 5,
+      "seatsFilled": 3,
+      "startDate": "2025-09-01T00:00:00Z",
+      "endDate": "2025-12-01T00:00:00Z",
+      "latestEnrollmentBy": "2025-08-28T00:00:00Z"
+    },
+    {
+      "courseId": "CS103",
+      "courseName": "Python Basics",
+      "maxSeats": 10,
+      "seatsFilled": 0,
+      "startDate": "2025-11-01T00:00:00Z",
+      "endDate": "2025-12-01T00:00:00Z",
+      "latestEnrollmentBy": "2025-10-25T00:00:00Z"
+    },
+    {
+      "courseId": "CS104",
+      "courseName": "Data Structures",
+      "maxSeats": 8,
+      "seatsFilled": 8,
+      "startDate": "2025-08-01T00:00:00Z",
+      "endDate": "2025-12-01T00:00:00Z",
+      "latestEnrollmentBy": "2025-07-25T00:00:00Z"
+    },
+    {
+      "courseId": "CS105",
+      "courseName": "Algorithms",
+      "maxSeats": 3,
+      "seatsFilled": 3,
+      "startDate": "2025-10-15T00:00:00Z",
+      "endDate": "2026-01-15T00:00:00Z",
+      "latestEnrollmentBy": "2025-10-10T00:00:00Z"
+    },
+    {
+      "courseId": "CS106",
+      "courseName": "Web Development",
+      "maxSeats": 12,
+      "seatsFilled": 6,
+      "startDate": "2025-07-01T00:00:00Z",
+      "endDate": "2025-08-01T00:00:00Z",
+      "latestEnrollmentBy": "2025-06-25T00:00:00Z"
+    },
+    {
+      "courseId": "CS107",
+      "courseName": "Databases",
+      "maxSeats": 5,
+      "seatsFilled": 0,
+      "startDate": "2025-12-01T00:00:00Z",
+      "endDate": "2026-01-01T00:00:00Z",
+      "latestEnrollmentBy": "2025-11-25T00:00:00Z"
+    },
+    {
+      "courseId": "CS108",
+      "courseName": "Cloud Computing",
+      "maxSeats": 7,
+      "seatsFilled": 7,
+      "startDate": "2025-08-20T00:00:00Z",
+      "endDate": "2025-11-20T00:00:00Z",
+      "latestEnrollmentBy": "2025-08-15T00:00:00Z"
+    },
+    {
+      "courseId": "CS109",
+      "courseName": "Machine Learning",
+      "maxSeats": 10,
+      "seatsFilled": 5,
+      "startDate": "2025-09-10T00:00:00Z",
+      "endDate": "2026-01-10T00:00:00Z",
+      "latestEnrollmentBy": "2025-09-05T00:00:00Z"
+    },
+    {
+      "courseId": "CS110",
+      "courseName": "AI & Deep Learning",
+      "maxSeats": 5,
+      "seatsFilled": 5,
+      "startDate": "2025-12-10T00:00:00Z",
+      "endDate": "2026-01-10T00:00:00Z",
+      "latestEnrollmentBy": "2025-12-01T00:00:00Z"
+    }
+  ]
+  

@@ -1,0 +1,122 @@
+[
+  {
+    "studentId": "f6f76a62-69b5-4e1a-9af1-f8f6e78f15e1",
+    "name": "Alice Johnson",
+    "email": "alice.johnson@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "bb52f4d6-6c15-4f78-b91a-4790d2b79926",
+    "name": "Bob Smith",
+    "email": "bob.smith@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "ea57390c-9078-4450-9d62-301dcb2e1cf0",
+    "name": "Charlie Davis",
+    "email": "charlie.davis@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "0f212708-36f0-499f-9fc0-7c3a30cc665b",
+    "name": "Diana Evans",
+    "email": "diana.evans@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "b3679d91-65b0-4ab3-b676-d34249a30aef",
+    "name": "Ethan Wilson",
+    "email": "ethan.wilson@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "4b75c330-63da-4a74-91e5-30de2f1af7c0",
+    "name": "Fiona Carter",
+    "email": "fiona.carter@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "ae17cf4f-59e5-4144-9d3e-97c59e77e587",
+    "name": "George Miller",
+    "email": "george.miller@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "5d410a44-fddc-4158-8e86-5f6a7b7c6f68",
+    "name": "Hannah Brown",
+    "email": "hannah.brown@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "6e7ccf34-46f1-4aef-817d-f040e4f0286c",
+    "name": "Ian Thompson",
+    "email": "ian.thompson@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "9e8d41ad-6486-4a9c-b6ad-bf1f9b201e8d",
+    "name": "Julia Roberts",
+    "email": "julia.roberts@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "01f5d041-5b6f-4a12-82f7-210b98e727e7",
+    "name": "Kevin Martinez",
+    "email": "kevin.martinez@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "90c44e36-3d36-4f45-8f65-b5d56a5e6db4",
+    "name": "Laura Walker",
+    "email": "laura.walker@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "a1a52ad7-d44a-4b9f-86d5-32c4c90d758e",
+    "name": "Michael King",
+    "email": "michael.king@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "a9b87720-efdd-43a0-bb2b-2cfcf6e2df6f",
+    "name": "Nina Scott",
+    "email": "nina.scott@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "6c3eb486-8cbf-4f9f-b7f6-1a67a671a7b0",
+    "name": "Oscar Young",
+    "email": "oscar.young@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "41b03d5e-086a-441d-a73f-d0eaef8bb7c6",
+    "name": "Paula Green",
+    "email": "paula.green@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "cbed92f3-4a2d-4ff1-a89e-730f52f8f827",
+    "name": "Quentin Hall",
+    "email": "quentin.hall@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "72906a61-8a6f-4b08-847c-9c0fef60f6af",
+    "name": "Rachel Adams",
+    "email": "rachel.adams@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "2a7b7c5f-b4f4-440f-9322-648d90b6a72f",
+    "name": "Samuel Lewis",
+    "email": "samuel.lewis@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  },
+  {
+    "studentId": "5e4d9771-3c02-47b6-a097-3af9edb58d1c",
+    "name": "Tina Clark",
+    "email": "tina.clark@example.com",
+    "passwordHash": "174474e0268a598e8bf207acefb8a67cf0100bbc5bcf0b14b97a64741937ceaa"
+  }
+]

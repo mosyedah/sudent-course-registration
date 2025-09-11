@@ -5,6 +5,10 @@ import enrollment.courseenrollment.model.Student;
 import enrollment.courseenrollment.model.StudentLog;
 import enrollment.courseenrollment.model.enums.ActionType;
 import enrollment.courseenrollment.exceptions.*;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 import enrollment.courseenrollment.repository.StudentRepository;
 
@@ -29,6 +33,8 @@ public class StudentService {
     				throw new EmailAlreadyExistsException("Email Already Exists");
     			student.setStudentId(UUID.randomUUID().toString());
     			studentRepo.createStudent(student);
+    			String passwordHash = hashPassword(student.getPasswordHash());
+    			student.setPasswordHash(passwordHash);
     			String desc  = String.format("Name : %s , Email : %s", student.getName(), student.getEmail());
     			logRecord(student.getStudentId(), ActionType.SIGN_UP,desc);
     			return student;
@@ -39,11 +45,12 @@ public class StudentService {
     }
 
     // Login by email + password hash
-    public Student login(String email, String passwordHash) {
+    public Student login(String email, String password) {
         // TODO: fetch student by email, validate password hash
 			Student student = studentRepo.getStudentByEmail(email);
 			if (student == null) 
 				throw new StudentNotFoundException("Email Does Not Exist");
+			String passwordHash = hashPassword(password);
 			if (passwordHash.equals(student.getPasswordHash())) { 
 				logRecord(student.getStudentId(), ActionType.LOGIN);
 				return student;
@@ -73,11 +80,12 @@ public class StudentService {
     }
 
     // Change password
-    public boolean changePassword(String studentId, String newPasswordHash) {
+    public boolean changePassword(String studentId, String newPassword) {
         // TODO: fetch, update password, save
         // TODO: log action
     	
-    	boolean isUpdated = studentRepo.updateStudentPassword(studentId, newPasswordHash);
+    	
+    	boolean isUpdated = studentRepo.updateStudentPassword(studentId, hashPassword(newPassword));
     	if (isUpdated) {
 			logRecord(studentId, ActionType.PASSWORD_UPDATE);
 			return true;
@@ -93,6 +101,24 @@ public class StudentService {
     	log.setAction(action);
     	log.setDescription(desc);
     	logService.logAction(log);
+    }
+    
+ // Hash password using SHA-256
+    private static String hashPassword(String password) {
+        if (password == null) return null;
+        String salt = "saltKey"; // can mix with userId also if needed 
+        String combo = password+salt;
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(combo.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 algorithm not available");
+        }
     }
     
 }

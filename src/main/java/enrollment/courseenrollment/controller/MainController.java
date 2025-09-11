@@ -21,6 +21,7 @@ public class MainController {
     /**
      * Starts the application by showing the front desk menu repeatedly.
      */
+    
     public void start() {
         while (true) {
             showFrontDeskMenu();

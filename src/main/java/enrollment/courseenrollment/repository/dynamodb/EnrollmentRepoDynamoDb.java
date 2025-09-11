@@ -231,7 +231,8 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 					conditionExpression = "#seats > :zero";
 					courseExpressionNames.put("#seats", CourseTableConstants.SEATS_FILLED);
 					courseExpressionValues.put(":zero", AttributeValue.builder().n("0").build());
-					courseExpressionValues.put(":inc", AttributeValue.builder().n("-1").build());
+					courseExpressionValues.put(":inc", AttributeValue.builder().n("0").build());
+					// dropped means seat was occupied , will still count as seat sold.
 				}else {
 					conditionExpression = "#maxSeats > #seats";
 					courseExpressionNames.put("#maxSeats", CourseTableConstants.MAX_SEATS);

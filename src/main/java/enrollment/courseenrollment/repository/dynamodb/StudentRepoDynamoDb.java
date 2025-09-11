@@ -24,7 +24,7 @@ public class StudentRepoDynamoDb implements StudentRepository {
 							StudentTableConstants.EMAIL, AttributeValue.builder().s(student.getEmail()).build(),
 							StudentTableConstants.PASSWORD_HASH, AttributeValue.builder().s(student.getPasswordHash()).build()
 							))
-					.conditionExpression("attribute_not_exists(#email) ")
+					.conditionExpression("attribute_not_exists(#email)")
 					.expressionAttributeNames(Map.of(
 							"#email", StudentTableConstants.EMAIL))
 					.build();
