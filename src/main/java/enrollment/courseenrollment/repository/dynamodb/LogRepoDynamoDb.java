@@ -15,6 +15,11 @@ public class LogRepoDynamoDb implements LogRepository {
 	@Override
 	public void createLog(StudentLog log) {
 	    Map<String, AttributeValue> item = new HashMap<>();
+	    //Always available
+	    item.put(StudentLogTableConstants.LOG_ID, AttributeValue.builder().s(log.getLogId()).build());
+	    item.put(StudentLogTableConstants.TIMESTAMP, AttributeValue.builder().s(log.getTimestamp().toString()).build());
+	    
+	    //Maybe null 
 	    putIfNotNull(item, StudentLogTableConstants.STUDENT_ID, log.getStudentId());
 	    putIfNotNull(item, StudentLogTableConstants.COURSE_ID, log.getCourseId());
 	    putIfNotNull(item, StudentLogTableConstants.ACTION, log.getAction().toString());
@@ -28,7 +33,7 @@ public class LogRepoDynamoDb implements LogRepository {
 	    try {
 	        client.putItem(request);
 	    } catch (Exception e) {
-	        // its okay if log is kipped fo rnow
+	        System.out.println("\n Exception From LogRepo Create Method" +e.getMessage());
 	    }
 	}
 

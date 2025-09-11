@@ -28,18 +28,21 @@ public class LogService {
 //        logRepo.createLog(log);
 //    }
     
-    //method will work in background in different thread
     public void logAction(StudentLog log) {
-        log.setLogId(UUID.randomUUID().toString());
-        log.setTimestamp(Instant.now());
         
         CompletableFuture.runAsync(() -> {
-            try {
-                logRepo.createLog(log);
-            } catch (Exception e) {
-                System.err.println("Failed to write log: " + e.getMessage());
-            }
+           asyncLogging(log);
         });
+    }
+    
+    //method will work in background in different thread
+    // so caller no need to wait for logs to be entered 
+    // and exceptions will not interrupt main thread
+    
+    private void asyncLogging(StudentLog log) {
+    	log.setLogId(UUID.randomUUID().toString());
+    	log.setTimestamp(Instant.now());
+    	logRepo.createLog(log);
     }
 
  
