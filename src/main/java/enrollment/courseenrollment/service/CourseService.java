@@ -2,6 +2,7 @@ package enrollment.courseenrollment.service;
 
 import enrollment.courseenrollment.exceptions.CourseAlreadyAppliedException;
 import enrollment.courseenrollment.exceptions.CourseEnrollmentDateHasPassedException;
+import enrollment.courseenrollment.exceptions.CourseNotFoundException;
 import enrollment.courseenrollment.exceptions.DropNotAllowedAfterCourseEndDateException;
 import enrollment.courseenrollment.exceptions.DropNotAllowedForEnrollmentStatusException;
 import enrollment.courseenrollment.exceptions.MaxEnrollmentsLimitReachedException;
@@ -45,7 +46,13 @@ public class CourseService {
     }
     
     public Course getCourseById(String courseId) {
-    	return courseRepo.getCourseById(courseId);
+    	Course course = courseRepo.getCourseById(courseId);
+    	
+    	if (course==null) 
+    		throw new CourseNotFoundException("No Course with CourseId : "+courseId);
+    	
+    	return course;
+    	
     }
 
     // Enroll student in course
@@ -54,7 +61,7 @@ public class CourseService {
     	// TODO: check if studentId+courseId exists , if exists check if it is optedOut proceed with PutItem
     	Course course = courseRepo.getCourseById(courseId);
     	if (!isDateInFuture(course.getLatestEnrollmentBy()))
-    		throw new CourseEnrollmentDateHasPassedException("Course Already St : " + courseId);
+    		throw new CourseEnrollmentDateHasPassedException("Course Enrollment Date has Passed CourseID : " + courseId);
     	
     	Enrollment enrollment  = enrollmentRepo.getEnrollmentByStudentAndCourse(studentId, courseId);
     	
@@ -120,9 +127,9 @@ public class CourseService {
     		throw new DropNotAllowedAfterCourseEndDateException("Drop Not Allowed As Course Already Ended, CourseId  : "+courseId);
     	
     	EnrollmentStatus status = enrollment.getStatus();
-    	if (status != EnrollmentStatus.ENROLLED && status != EnrollmentStatus.WAITLISTED) {
-    		throw new DropNotAllowedForEnrollmentStatusException("Drop Now Allowed for Current Status , CourseId : "+ courseId);
-		}
+//    	if (status != EnrollmentStatus.ENROLLED && status != EnrollmentStatus.WAITLISTED) {
+//    		throw new DropNotAllowedForEnrollmentStatusException("Drop Now Allowed for Current Status , CourseId : "+ courseId);
+//		}
     	
     	// TODO: update status to DROPPED/OPTEDOUT if student is currently enrolled / Waitlisted else throw exception
         ActionType actionType;

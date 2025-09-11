@@ -1,5 +1,12 @@
 package enrollment.courseenrollment.controller;
 
+import enrollment.courseenrollment.exceptions.CourseAlreadyAppliedException;
+import enrollment.courseenrollment.exceptions.CourseEnrollmentDateHasPassedException;
+import enrollment.courseenrollment.exceptions.DropNotAllowedAfterCourseEndDateException;
+import enrollment.courseenrollment.exceptions.DropNotAllowedForEnrollmentStatusException;
+import enrollment.courseenrollment.exceptions.MaxEnrollmentsLimitReachedException;
+import enrollment.courseenrollment.exceptions.MaxWaitlistedLimitReachedException;
+import enrollment.courseenrollment.exceptions.StudentNotEnrolledForThisCourseException;
 import enrollment.courseenrollment.model.Course;
 import enrollment.courseenrollment.model.Enrollment;
 import enrollment.courseenrollment.model.enums.EnrollmentStatus;
@@ -31,10 +38,16 @@ public class CourseController {
 
         List<Course> courses = courseService.viewAllCourses();
         System.out.println("\n--- Available Courses ---");
+        
+        if (courses == null) {
+			System.out.println("No courses available, Come back later Time");
+			return;
+		}
+        
         for (Course c : courses) {
         	int seats = c.getMaxSeats() - c.getSeatsFilled();
             String seatInfo = seats>0
-                    ? "Seats: " + seats + "/" + c.getMaxSeats()
+                    ? "Seats: " + seats + "available , of " + c.getMaxSeats()
                     : "Full";
             System.out.println(c.getCourseId() + " - " + c.getCourseName() + " (" + seatInfo + ")");
         }
@@ -65,17 +78,21 @@ public class CourseController {
         String choice = scanner.nextLine();
 
         enrollments.forEach(e -> {
+        	EnrollmentStatus status = e.getStatus();
             switch (choice) {
                 case "1":
-                    if (e.getStatus() == EnrollmentStatus.ENROLLED)
+                    if (status == EnrollmentStatus.ENROLLED)
                         printEnrollment(e);
                     break;
                 case "2":
-                    if (e.getStatus() == EnrollmentStatus.COMPLETED)
+                    if (status == EnrollmentStatus.COMPLETED 
+                    	|| status == EnrollmentStatus.DROPPED 
+                    	|| status == EnrollmentStatus.WITHDRAWN
+                    	|| status == EnrollmentStatus.OPTED_OUT)
                         printEnrollment(e);
                     break;
                 case "3":
-                    if (e.getStatus() == EnrollmentStatus.WAITLISTED)
+                    if (status == EnrollmentStatus.WAITLISTED)
                         printEnrollment(e);
                     break;
                 case "4":
@@ -96,13 +113,23 @@ public class CourseController {
         String studentId = SessionManager.getInstance().getUserId();
         System.out.print("Enter Course ID to enroll: ");
         String courseId = scanner.nextLine();
-
-        boolean enrolled = courseService.enroll(studentId, courseId);
-        if (enrolled) {
-            System.out.println("Successfully applied for Course " + courseId + " Refresh Page to check status.");
-        } else {
-            System.out.println("Enrollment failed. Invalid course or already enrolled."); 
-        }
+		try {
+			boolean enrolled = courseService.enroll(studentId, courseId);
+			if (enrolled) {
+				System.out.println("Successfully applied for Course " + courseId + " Refresh Page to check status.");
+			} else {
+				System.out.println("Enrollment failed. Seat Availability may have changed, refresh page."); 
+			}
+			
+		} catch (CourseEnrollmentDateHasPassedException e) {
+			System.out.println(e.getMessage());
+		} catch (CourseAlreadyAppliedException e) {
+			System.out.println(e.getMessage());
+		}catch (MaxEnrollmentsLimitReachedException e) {
+			System.out.println(e.getMessage());
+		}catch (MaxWaitlistedLimitReachedException e) {
+			System.out.println(e.getMessage());
+		}
     }
 
     /**
@@ -113,14 +140,29 @@ public class CourseController {
 
         String studentId = SessionManager.getInstance().getUserId();
         System.out.print("Enter Course ID to drop: ");
+        
+        System.out.println("If Course Is Enrolled and Date is before latestEnrollmentDate , Student will be withdrawn(Cant Reapply), seat is released");
+        System.out.println("If Course Is Waitlisted and Date is before latestEnrollmentDate , Student will be Opted Out (Can Reapply) , Async waitlist adjustment");
+        System.out.println("If Course Is Enrolled and Date is after latestEnrollmentDate , Student will be Dropped, Seat is not released");
+        
         String courseId = scanner.nextLine();
-
-        boolean success = courseService.drop(studentId, courseId);
-        if (success) {
-            System.out.println("Course dropped successfully.");
-        } else {
-            System.out.println("Drop failed. You may not be enrolled in this course.");
-        }
+		try {
+			boolean success = courseService.drop(studentId, courseId);
+			if (success) {
+				System.out.println("Course dropped successfully.");
+			} else {
+				System.out.println("Drop failed. Refresh and Try Again");
+			}
+			
+		} catch (StudentNotEnrolledForThisCourseException e) {
+			System.out.println(e.getMessage());
+		}catch (DropNotAllowedAfterCourseEndDateException e) {
+			System.out.println(e.getMessage());
+		}catch (DropNotAllowedForEnrollmentStatusException e) {
+			System.out.println(e.getMessage());
+		}
+        
+        
     }
 
     private void printEnrollment(Enrollment e) {

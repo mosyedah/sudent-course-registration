@@ -64,15 +64,18 @@ public class StudentService {
         // TODO: call studentRepo.getStudentById(studentId)
     	Student student = studentRepo.getStudentById(studentId);
     	if (student == null )
-    		throw new InvalidCredentialsException("Invalid Student Id");
+    		throw new StudentNotFoundException("Invalid Student Id");
     	logRecord(studentId, ActionType.VIEW_PROFILE);
         return student;
     }
 
     // Update profile
-    public Student updateProfile(Student student) {
+    public Student updateProfile(Student student , boolean isEmailUpdate) {
         // TODO: call studentRepo.updateStudent(student)
         // TODO: log action
+    	if (isEmailUpdate && studentRepo.getStudentByEmail(student.getEmail()) != null)
+    		throw new EmailAlreadyExistsException("Email Already Exists, Failed to Update profile");
+    	
     	studentRepo.updateStudent(student);
     	String desc = String.format("Email  : %s , Name : %s",student.getEmail(), student.getName() );
     	logRecord(student.getStudentId(), ActionType.UPDATE_PROFILE,desc);

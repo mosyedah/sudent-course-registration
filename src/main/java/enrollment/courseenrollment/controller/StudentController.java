@@ -1,7 +1,13 @@
 package enrollment.courseenrollment.controller;
 
+import enrollment.courseenrollment.exceptions.DatabaseUnknownException;
+import enrollment.courseenrollment.exceptions.EmailAlreadyExistsException;
+import enrollment.courseenrollment.exceptions.InvalidCredentialsException;
+import enrollment.courseenrollment.exceptions.StudentNotFoundException;
 import enrollment.courseenrollment.model.Student;
 import enrollment.courseenrollment.service.StudentService;
+
+import java.rmi.StubNotFoundException;
 import java.util.Scanner;
 
 /**
@@ -52,14 +58,17 @@ public class StudentController {
         student.setEmail(email);
         student.setPasswordHash(password);
 
-        student = studentService.signUp(student);
-        if (student!=null) {
+        try {
+        	student = studentService.signUp(student);			
+		
             System.out.println("Thank you for details, your account is created and now you’re logged in.");
             this.loggedInStudent = student;
             SessionManager.createSession(student.getStudentId());
-        } else {
-            System.out.println("Signup failed. Email might already be registered.");
-        }
+	     
+        } catch (EmailAlreadyExistsException e) {
+			System.out.println("Email entered already exists, use a new email");
+			return;
+		}
     }
 
     /**
@@ -71,15 +80,21 @@ public class StudentController {
         String email = scanner.nextLine();
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
-
-        Student student = studentService.login(email, password);
-        if (student != null) {
-            System.out.println("Thank you for details, now you’re logged in.");
-            this.loggedInStudent = student;
-            SessionManager.createSession(student.getStudentId());
-        } else {
-            System.out.println("Invalid credentials.");
-        }
+        Student student;
+        try {
+        	student = studentService.login(email, password);
+        	if (student != null) {
+        		System.out.println("Thank you for details, now you’re logged in.");
+        		this.loggedInStudent = student;
+        		SessionManager.createSession(student.getStudentId());
+        	}
+			
+		} catch (StudentNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
+        catch (InvalidCredentialsException e) {
+			System.out.println(e.getMessage());
+		}
     }
 
     /**
@@ -87,10 +102,16 @@ public class StudentController {
      */
     public void viewProfile() {
         if (!isSessionActive()) return;
-
-        System.out.println("\n--- Your Profile Details ---");
-        System.out.println("Name: " + loggedInStudent.getName());
-        System.out.println("Email: " + loggedInStudent.getEmail());
+        try {
+        	loggedInStudent = studentService.viewProfile(getLoggedInStudentName());
+        	
+        	System.out.println("\n--- Your Profile Details ---");
+        	System.out.println("Name: " + loggedInStudent.getName());
+        	System.out.println("Email: " + loggedInStudent.getEmail());
+			
+		} catch (StudentNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
     }
 
     /**
@@ -116,11 +137,20 @@ public class StudentController {
         Student student = new Student(loggedInStudent);
         student.setEmail(email.isBlank() ? loggedInStudent.getEmail() : email);
         student.setName(name.isBlank() ? loggedInStudent.getName() : name);
+        boolean isEmailUpdate = false;
+        if (!email.isBlank()) 
+        	isEmailUpdate = true;
         try {
 			
-        	loggedInStudent = studentService.updateProfile(student);
-		} catch (Exception e) {
-			// TODO: handle exception
+        	loggedInStudent = studentService.updateProfile(student,isEmailUpdate);
+		} 
+        
+        catch (EmailAlreadyExistsException e) {
+			System.out.println(e.getMessage());
+		}
+        
+        catch (StudentNotFoundException e) {
+			System.out.println(e.getMessage());
 		}
 
        
@@ -139,15 +169,19 @@ public class StudentController {
             System.out.println("Password must be at least 6 characters. Update aborted.");
             return;
         }
-
-        boolean success = studentService.changePassword(loggedInStudent.getStudentId(),
-               newPassword);
-
-        if (success) {
-            System.out.println("Password changed successfully.");
-        } else {
-            System.out.println("Password change failed.");
-        }
+		try {
+			boolean success = studentService.changePassword(loggedInStudent.getStudentId(),
+					newPassword);
+			
+			if (success) {
+				System.out.println("Password changed successfully.");
+			} else {
+				System.out.println("Password change failed.");
+			}
+			
+		} catch (StudentNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
     }
 
     /**

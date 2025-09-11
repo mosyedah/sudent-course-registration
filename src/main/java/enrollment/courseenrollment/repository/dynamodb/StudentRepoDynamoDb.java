@@ -97,13 +97,15 @@ public class StudentRepoDynamoDb implements StudentRepository {
 				.key(Map.of(StudentTableConstants.STUDENT_ID,
 						AttributeValue.builder().s(student.getStudentId()).build()))
 				.updateExpression("Set #n = :name , #email = :email")
+				.conditionExpression("attribute_exists(#studentId)")
 				.expressionAttributeNames(Map.of(
 						"#n", StudentTableConstants.NAME,
 						"#email", StudentTableConstants.EMAIL
 						))
 				.expressionAttributeValues(Map.of(
 						":name", AttributeValue.builder().s(student.getName()).build(),
-						":email" , AttributeValue.builder().s(student.getEmail()).build()
+						":email" , AttributeValue.builder().s(student.getEmail()).build(),
+						"#studentId",AttributeValue.builder().s(student.getStudentId()).build()
 						))
 				.returnValues(ReturnValue.ALL_NEW)
 				.build();
@@ -113,7 +115,11 @@ public class StudentRepoDynamoDb implements StudentRepository {
 			student.setEmail(updatedItem.get(StudentTableConstants.EMAIL).s());
 			student.setName(updatedItem.get(StudentTableConstants.NAME).s());
 			return student;
-		} catch (Exception e) {
+		}catch (ConditionalCheckFailedException e) {
+			throw new StudentNotFoundException("student Id does not exists");
+		}
+		
+		catch (Exception e) {
 			throw new DatabaseUnknownException("Unknown Error , Try again");
 		}
 	}

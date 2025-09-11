@@ -44,7 +44,7 @@ public class MainController {
 
                 case "3": // Exit
                     System.out.println("I’m well, Have a good day.");
-                    return;
+                    System.exit(0);
 
                 default:
                     System.out.println("Invalid choice. Please try again.");

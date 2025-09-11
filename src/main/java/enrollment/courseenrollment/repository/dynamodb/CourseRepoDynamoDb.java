@@ -30,7 +30,7 @@ public class CourseRepoDynamoDb implements CourseRepository{
 		try {
 			GetItemResponse response = client.getItem(request);
 			if (!response.hasItem()) 
-				throw new CourseNotFoundException("Course not found for CourseId : "+ courseId);
+				return null;
 			Map<String, AttributeValue> item = response.item();
 			return itemToCourse(item);
 		} catch (Exception e) {
@@ -47,6 +47,10 @@ public class CourseRepoDynamoDb implements CourseRepository{
 		List<Course> courses = new ArrayList<Course>();
 		try {			
 			ScanResponse response = client.scan(request);
+			
+			if(!response.hasItems())
+				return null;
+			
 			for (Map<String, AttributeValue> item : response.items()) {
 				courses.add(itemToCourse(item));
 			}
