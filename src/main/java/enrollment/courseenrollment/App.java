@@ -1,9 +1,7 @@
 package enrollment.courseenrollment;
 
 
-import enrollment.courseenrollment.controller.CourseController;
-import enrollment.courseenrollment.controller.MainController;
-import enrollment.courseenrollment.controller.StudentController;
+import enrollment.courseenrollment.controller.*;
 import enrollment.courseenrollment.repository.*;
 import enrollment.courseenrollment.repository.dynamodb.*;
 import enrollment.courseenrollment.service.*;

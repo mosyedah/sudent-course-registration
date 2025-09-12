@@ -45,6 +45,8 @@ public class WaitlistService {
             } else if (actionType == ActionType.WITHDRAWN) {
                 // Promote first waitlisted student to ENROLLED
                 List<Enrollment> waitlist = enrollmentRepo.getWaitlistedEnrollmentsByCourseId(courseId);
+                
+                
                 Course course = courseRepo.getCourseById(courseId);
                 
                 if (course.getMaxSeats() <= course.getSeatsFilled()) 
@@ -52,6 +54,10 @@ public class WaitlistService {
 				
                 
                 if (!waitlist.isEmpty()) {
+                	
+                	// sorting first to ensure pos 1 gets enrolled
+                	sortWaitlistedList(waitlist);
+                	
                     Enrollment first = waitlist.get(0);
                     first.setStatus(EnrollmentStatus.ENROLLED);
                     first.setEnrolledAt(Instant.now());
@@ -83,9 +89,7 @@ public class WaitlistService {
         List<Enrollment> waitlist = enrollmentRepo.getWaitlistedEnrollmentsByCourseId(courseId);
         
         // sort by pos
-        waitlist.sort(Comparator.comparingInt(e -> 
-        		e.getPositionInWaitlist() == null ? Integer.MAX_VALUE : e.getPositionInWaitlist()
-        		));
+        sortWaitlistedList(waitlist);
         
         int position = 1;
         for (Enrollment e : waitlist) {
@@ -93,7 +97,13 @@ public class WaitlistService {
             enrollmentRepo.updateEnrollment(e); // simple update, transaction not strictly needed here
         }
     }
-
+    
+    private void sortWaitlistedList(List<Enrollment> waitlist) {
+    	waitlist.sort(Comparator.comparingInt(e -> 
+    	e.getPositionInWaitlist() == null ? Integer.MAX_VALUE : e.getPositionInWaitlist()
+    			));	
+    }
+    
     private void logEnrollment(Enrollment enrollment, ActionType actionType) {
         
     	StudentLog log = new StudentLog();

@@ -1,13 +1,11 @@
 package enrollment.courseenrollment.controller;
 
-import enrollment.courseenrollment.exceptions.DatabaseUnknownException;
 import enrollment.courseenrollment.exceptions.EmailAlreadyExistsException;
 import enrollment.courseenrollment.exceptions.InvalidCredentialsException;
 import enrollment.courseenrollment.exceptions.StudentNotFoundException;
 import enrollment.courseenrollment.model.Student;
 import enrollment.courseenrollment.service.StudentService;
 
-import java.rmi.StubNotFoundException;
 import java.util.Scanner;
 
 /**
@@ -15,6 +13,14 @@ import java.util.Scanner;
  * Uses singleton SessionManager to check session and track current user.
  */
 public class StudentController {
+
+    // ANSI color codes
+    public static final String RESET = "\u001B[0m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String RED = "\u001B[31m";
+    public static final String CYAN = "\u001B[36m";
+    public static final String YELLOW = "\u001B[33m";
+    public static final String BOLD = "\u001B[1m";
 
     private final StudentService studentService;
     private final Scanner scanner;
@@ -29,29 +35,28 @@ public class StudentController {
      * Signs up a new student and starts a session if successful.
      */
     public void signUp() {
-        System.out.println("\n--- I’ll definitely help you signing up, help me with details ---");
+        System.out.println("\n" + CYAN + BOLD + "--- Sign Up ---" + RESET);
 
         System.out.print("Enter name: ");
         String name = scanner.nextLine();
         if (!InputUtils.isValidName(name)) {
-            System.out.println("Invalid name. Must be letters only, 2-50 chars.");
+            printMessage("Invalid name. Must be letters only, 2-50 chars.", YELLOW);
             return;
         }
 
         System.out.print("Enter email: ");
         String email = scanner.nextLine();
         if (!InputUtils.isValidEmail(email)) {
-            System.out.println("Invalid email format.");
+            printMessage("Invalid email format.", YELLOW);
             return;
         }
 
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
         if (!InputUtils.isValidPassword(password)) {
-            System.out.println("Password must be at least 6 characters.");
+            printMessage("Password must be at least 6 characters.", YELLOW);
             return;
         }
-
 
         Student student = new Student();
         student.setName(name);
@@ -59,42 +64,36 @@ public class StudentController {
         student.setPasswordHash(password);
 
         try {
-        	student = studentService.signUp(student);			
-		
-            System.out.println("Thank you for details, your account is created and now you’re logged in.");
+            student = studentService.signUp(student);
+            printMessage("Thank you! Your account is created and you’re now logged in.", GREEN);
             this.loggedInStudent = student;
             SessionManager.createSession(student.getStudentId());
-	     
         } catch (EmailAlreadyExistsException e) {
-			System.out.println("Email entered already exists, use a new email");
-			return;
-		}
+            printMessage("Error: " + e.getMessage(), RED);
+        }
     }
 
     /**
      * Logs in an existing student and starts a session if successful.
      */
     public void login() {
-        System.out.println("\n--- Welcome back, help with details for logging in ---");
+        System.out.println("\n" + CYAN + BOLD + "--- Login ---" + RESET);
+
         System.out.print("Enter email: ");
         String email = scanner.nextLine();
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
-        Student student;
+
         try {
-        	student = studentService.login(email, password);
-        	if (student != null) {
-        		System.out.println("Thank you for details, now you’re logged in.");
-        		this.loggedInStudent = student;
-        		SessionManager.createSession(student.getStudentId());
-        	}
-			
-		} catch (StudentNotFoundException e) {
-			System.out.println(e.getMessage());
-		}
-        catch (InvalidCredentialsException e) {
-			System.out.println(e.getMessage());
-		}
+            Student student = studentService.login(email, password);
+            if (student != null) {
+                printMessage("Welcome back! You’re now logged in.", GREEN);
+                this.loggedInStudent = student;
+                SessionManager.createSession(student.getStudentId());
+            }
+        } catch (StudentNotFoundException | InvalidCredentialsException e) {
+            printMessage("Error: " + e.getMessage(), RED);
+        }
     }
 
     /**
@@ -102,16 +101,16 @@ public class StudentController {
      */
     public void viewProfile() {
         if (!isSessionActive()) return;
+
         try {
-        	loggedInStudent = studentService.viewProfile(getLoggedInStudentName());
-        	
-        	System.out.println("\n--- Your Profile Details ---");
-        	System.out.println("Name: " + loggedInStudent.getName());
-        	System.out.println("Email: " + loggedInStudent.getEmail());
-			
-		} catch (StudentNotFoundException e) {
-			System.out.println(e.getMessage());
-		}
+            loggedInStudent = studentService.viewProfile(loggedInStudent.getStudentId());
+
+            System.out.println("\n" + CYAN + BOLD + "--- Your Profile Details ---" + RESET);
+            System.out.println(YELLOW + "Name:  " + RESET + loggedInStudent.getName());
+            System.out.println(YELLOW + "Email: " + RESET + loggedInStudent.getEmail());
+        } catch (StudentNotFoundException e) {
+            printMessage("Error: " + e.getMessage(), RED);
+        }
     }
 
     /**
@@ -120,51 +119,39 @@ public class StudentController {
     public void updateProfile() {
         if (!isSessionActive()) return;
 
-        System.out.println("\n--- Help me with changes ---");
+        System.out.println("\n" + CYAN + BOLD + "--- Update Profile ---" + RESET);
+
         System.out.print("Enter new name (or leave blank to keep current): ");
         String name = scanner.nextLine();
         if (!name.isBlank() && !InputUtils.isValidName(name)) {
-            System.out.println("Invalid name. Update aborted.");
+            printMessage("Invalid name. Update aborted.", YELLOW);
             return;
         }
 
         System.out.print("Enter new email (or leave blank to keep current): ");
         String email = scanner.nextLine();
         if (!email.isBlank() && !InputUtils.isValidEmail(email)) {
-            System.out.println("Invalid email. Update aborted.");
+            printMessage("Invalid email. Update aborted.", YELLOW);
             return;
         }
+
+        if (name.isBlank() && email.isBlank()) {
+            printMessage("No changes requested.", YELLOW);
+            return;
+        }
+
         Student student = new Student(loggedInStudent);
         student.setEmail(email.isBlank() ? loggedInStudent.getEmail() : email);
         student.setName(name.isBlank() ? loggedInStudent.getName() : name);
-       
-        if(name.isBlank() && email.isBlank())
-        {
-        	System.out.println("No Changes requested ");
-        	return;
-        }
-        
-        boolean isEmailUpdate = false;
-        if (!email.isBlank()) 
-        	isEmailUpdate = true;
-        
-       
-        try {
-			
-        	loggedInStudent = studentService.updateProfile(student,isEmailUpdate);
-        	System.out.println("  Profile Successfully Updated");
-        } 
-        
-        
-        catch (EmailAlreadyExistsException e) {
-			System.out.println(e.getMessage());
-		}
-        
-        catch (StudentNotFoundException e) {
-			System.out.println(e.getMessage());
-		}
 
-       
+        boolean isEmailUpdate = !email.isBlank();
+
+        try {
+            loggedInStudent = studentService.updateProfile(student, isEmailUpdate);
+            printMessage("Profile updated successfully.", GREEN);
+        } catch (EmailAlreadyExistsException | StudentNotFoundException e) {
+            printMessage("Error: " + e.getMessage(), RED);
+        }
     }
 
     /**
@@ -173,26 +160,27 @@ public class StudentController {
     public void changePassword() {
         if (!isSessionActive()) return;
 
-        System.out.println("\n--- Change Password ---");
+        System.out.println("\n" + CYAN + BOLD + "--- Change Password ---" + RESET);
         System.out.print("Enter new password: ");
         String newPassword = scanner.nextLine();
+
         if (!InputUtils.isValidPassword(newPassword)) {
-            System.out.println("Password must be at least 6 characters. Update aborted.");
+            printMessage("Password must be at least 6 characters. Update aborted.", YELLOW);
             return;
         }
-		try {
-			boolean success = studentService.changePassword(loggedInStudent.getStudentId(),
-					newPassword);
-			
-			if (success) {
-				System.out.println("Password changed successfully.");
-			} else {
-				System.out.println("Password change failed.");
-			}
-			
-		} catch (StudentNotFoundException e) {
-			System.out.println(e.getMessage());
-		}
+
+        try {
+            boolean success = studentService.changePassword(
+                    loggedInStudent.getStudentId(), newPassword);
+
+            if (success) {
+                printMessage("Password changed successfully.", GREEN);
+            } else {
+                printMessage("Password change failed.", RED);
+            }
+        } catch (StudentNotFoundException e) {
+            printMessage("Error: " + e.getMessage(), RED);
+        }
     }
 
     /**
@@ -208,10 +196,16 @@ public class StudentController {
     private boolean isSessionActive() {
         SessionManager session = SessionManager.getInstance();
         if (session == null || !session.isLoggedIn()) {
-            System.out.println("Session expired. Please login again.");
+            printMessage("Session expired. Please login again.", RED);
             return false;
         }
         return true;
     }
-}
 
+    /**
+     * Helper to print messages with colors.
+     */
+    private void printMessage(String message, String color) {
+        System.out.println(color + message + RESET);
+    }
+}
