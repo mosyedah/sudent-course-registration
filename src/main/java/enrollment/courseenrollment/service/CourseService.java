@@ -59,7 +59,15 @@ public class CourseService {
     public boolean enroll(String studentId, String courseId) {
     	
     	// TODO: check if studentId+courseId exists , if exists check if it is optedOut proceed with PutItem
+    	courseId = courseId.toUpperCase();
+    	
+    	
+    	
     	Course course = courseRepo.getCourseById(courseId);
+    	
+    	if (course == null)
+    		throw new CourseNotFoundException("No course found with CourseId : "+courseId);
+    	
     	if (!isDateInFuture(course.getLatestEnrollmentBy()))
     		throw new CourseEnrollmentDateHasPassedException("Course Enrollment Date has Passed CourseID : " + courseId);
     	
@@ -67,7 +75,7 @@ public class CourseService {
     	
     	if (enrollment != null) {
 			if (enrollment.getStatus() != EnrollmentStatus.OPTED_OUT) {//opted out students can re apply
-				throw new CourseAlreadyAppliedException("Course Already Applied CourseID :"+ courseId);
+				throw new CourseAlreadyAppliedException("You've Already applied for this course :"+ courseId);
 			}
 		}
     	// TODO: if Dopped or completed or Waitlisted or Enrolled deny enrollment
@@ -116,8 +124,15 @@ public class CourseService {
 
     // Drop student from course
     public boolean drop(String studentId, String courseId) {
+    	
     	// TODO: fetch enrollment by studentId + courseId
+    	courseId = courseId.toUpperCase();
+    	
     	Course course = courseRepo.getCourseById(courseId);
+    	
+    	if (course == null)
+    		throw new CourseNotFoundException("No course found with CourseId : "+courseId);
+    	
     	Enrollment enrollment = enrollmentRepo.getEnrollmentByStudentAndCourse(studentId, courseId);
     	// TODO: if not present throw error, if present status shoudl be Enrolled/waitlisted throw error
     	if (enrollment == null)

@@ -100,12 +100,12 @@ public class StudentRepoDynamoDb implements StudentRepository {
 				.conditionExpression("attribute_exists(#studentId)")
 				.expressionAttributeNames(Map.of(
 						"#n", StudentTableConstants.NAME,
-						"#email", StudentTableConstants.EMAIL
+						"#email", StudentTableConstants.EMAIL,
+						"#studentId", StudentTableConstants.STUDENT_ID
 						))
 				.expressionAttributeValues(Map.of(
 						":name", AttributeValue.builder().s(student.getName()).build(),
-						":email" , AttributeValue.builder().s(student.getEmail()).build(),
-						"#studentId",AttributeValue.builder().s(student.getStudentId()).build()
+						":email" , AttributeValue.builder().s(student.getEmail()).build()
 						))
 				.returnValues(ReturnValue.ALL_NEW)
 				.build();
@@ -120,7 +120,7 @@ public class StudentRepoDynamoDb implements StudentRepository {
 		}
 		
 		catch (Exception e) {
-			throw new DatabaseUnknownException("Unknown Error , Try again");
+			throw new DatabaseUnknownException(e.getMessage());
 		}
 	}
 
@@ -131,7 +131,9 @@ public class StudentRepoDynamoDb implements StudentRepository {
 				.key(Map.of(StudentTableConstants.STUDENT_ID,AttributeValue.builder().s(studentId).build()))
 				.updateExpression("Set #pass = :passwordHash")
 				.conditionExpression("attribute_exists(#studentId)")
-				.expressionAttributeValues(Map.of(":passwordHash", AttributeValue.builder().s(passwordHash).build()))
+				.expressionAttributeValues(Map.of(
+						":passwordHash", AttributeValue.builder().s(passwordHash).build()
+						))
 				.expressionAttributeNames(Map.of("#pass",StudentTableConstants.PASSWORD_HASH,
 						"#studentId", StudentTableConstants.STUDENT_ID))
 				.build();

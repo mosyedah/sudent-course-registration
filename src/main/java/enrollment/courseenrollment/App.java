@@ -15,13 +15,13 @@ public class App {
 	private static MainController mainController;
 	
     public static void main(String[] args) {
-        System.out.println("Booting the services ");
-        start();
+        System.out.println("Booting services ....");
+        setup();
         mainController.start();
     }
     
     
-    private static void start() {
+    private static void setup() {
     	
     	// Repo Instances
     	CourseRepository courseRepository = new CourseRepoDynamoDb(); 

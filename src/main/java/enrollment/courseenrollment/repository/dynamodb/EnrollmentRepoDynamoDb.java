@@ -214,7 +214,7 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 	   
 	    appendUpdateField(updateExpression, expressionValues,expressionNames,
 	    		EnrollmentTableConstants.WITHDRAWN_AT,
-	    		enrollment.getOptedOutAt() != null ? AttributeValue.builder().s(enrollment.getWithdrawnAt().toString()).build() : null);
+	    		enrollment.getWithdrawnAt() != null ? AttributeValue.builder().s(enrollment.getWithdrawnAt().toString()).build() : null);
 
 	    if (expressionValues.isEmpty()) return false;
 	    

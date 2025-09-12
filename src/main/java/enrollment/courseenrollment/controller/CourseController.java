@@ -2,6 +2,7 @@ package enrollment.courseenrollment.controller;
 
 import enrollment.courseenrollment.exceptions.CourseAlreadyAppliedException;
 import enrollment.courseenrollment.exceptions.CourseEnrollmentDateHasPassedException;
+import enrollment.courseenrollment.exceptions.CourseNotFoundException;
 import enrollment.courseenrollment.exceptions.DropNotAllowedAfterCourseEndDateException;
 import enrollment.courseenrollment.exceptions.DropNotAllowedForEnrollmentStatusException;
 import enrollment.courseenrollment.exceptions.MaxEnrollmentsLimitReachedException;
@@ -13,6 +14,10 @@ import enrollment.courseenrollment.model.enums.EnrollmentStatus;
 import enrollment.courseenrollment.service.CourseService;
 import enrollment.courseenrollment.service.WaitlistService;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -22,6 +27,14 @@ import java.util.Scanner;
  */
 public class CourseController {
 
+	// ANSI color codes
+	public static final String RESET = "\u001B[0m";
+	public static final String GREEN = "\u001B[32m";
+	public static final String RED = "\u001B[31m";
+	public static final String CYAN = "\u001B[36m";
+	public static final String YELLOW = "\u001B[33m";
+	public static final String BOLD = "\u001B[1m";
+	
     private final CourseService courseService;
     private final Scanner scanner;
 
@@ -30,6 +43,8 @@ public class CourseController {
         this.scanner = new Scanner(System.in);
     }
 
+ 
+
     /**
      * Shows all available courses with seat/waitlist info.
      */
@@ -37,23 +52,65 @@ public class CourseController {
         if (!isSessionActive()) return;
 
         List<Course> courses = courseService.viewAllCourses();
-        System.out.println("\n--- Available Courses ---");
-        
-        if (courses == null) {
-			System.out.println("No courses available, Come back later Time");
-			return;
-		}
-        
-        for (Course c : courses) {
-        	int seats = c.getMaxSeats() - c.getSeatsFilled();
-            String seatInfo = seats>0
-                    ? "Seats: " + seats + "available , of " + c.getMaxSeats()
-                    : "Full";
-            System.out.println(c.getCourseId() + " - " + c.getCourseName() + " (" + seatInfo + ")");
+        System.out.println("\n" + CYAN + BOLD + "--- Available Courses ---" + RESET);
+
+        if (courses == null || courses.isEmpty()) {
+            System.out.println(RED + "No courses available, come back later." + RESET);
+            return;
         }
 
-        System.out.println("\nOptions: Enroll In a course | Go back to Home Screen | Logout");
+        // Separate open and closed courses
+        List<Course> openCourses = new ArrayList<>();
+        List<Course> closedCourses = new ArrayList<>();
+
+        for (Course c : courses) {
+            if (isDateInFuture(c.getLatestEnrollmentBy())) {
+                openCourses.add(c);
+            } else {
+                closedCourses.add(c);
+            }
+        }
+
+        // Table header
+        System.out.println(
+                padWithColor(BOLD + YELLOW + "CourseID" + RESET, 12) +
+                padWithColor(BOLD + YELLOW + "Course Name" + RESET, 28) +
+                padWithColor(BOLD + YELLOW + "Seats" + RESET, 25) +
+                padWithColor(BOLD + YELLOW + "Enrollment" + RESET, 15)
+        );
+        System.out.println("-------------------------------------------------------------------------------");
+
+        // Print open courses first
+        for (Course c : openCourses) {
+            int seatsLeft = c.getMaxSeats() - c.getSeatsFilled();
+            String seatInfo = (seatsLeft > 0)
+                    ? seatsLeft + " available / " + c.getMaxSeats()
+                    : YELLOW + "Waitlist" + RESET;
+            String enrollmentStatus = GREEN + "Open" + RESET;
+
+            System.out.println(
+                    padWithColor(c.getCourseId(), 12) +
+                    padWithColor(c.getCourseName(), 28) +
+                    padWithColor(seatInfo, 25) +
+                    padWithColor(enrollmentStatus, 15)
+            );
+        }
+
+        // Print closed courses after
+        for (Course c : closedCourses) {
+            String seatInfo = RED + "Not Available" + RESET;
+            String enrollmentStatus = RED + "Closed" + RESET;
+
+            System.out.println(
+                    padWithColor(c.getCourseId(), 12) +
+                    padWithColor(c.getCourseName(), 28) +
+                    padWithColor(seatInfo, 25) +
+                    padWithColor(enrollmentStatus, 15)
+            );
+        }
+
     }
+
 
     /**
      * Shows student's courses based on type (enrolled, past, waitlisted, all).
@@ -129,6 +186,8 @@ public class CourseController {
 			System.out.println(e.getMessage());
 		}catch (MaxWaitlistedLimitReachedException e) {
 			System.out.println(e.getMessage());
+		}catch (CourseNotFoundException e) {
+			System.out.println(e.getMessage());
 		}
     }
 
@@ -141,10 +200,10 @@ public class CourseController {
         String studentId = SessionManager.getInstance().getUserId();
         System.out.print("Enter Course ID to drop: ");
         
-        System.out.println("If Course Is Enrolled and Date is before latestEnrollmentDate , Student will be withdrawn(Cant Reapply), seat is released");
-        System.out.println("If Course Is Waitlisted and Date is before latestEnrollmentDate , Student will be Opted Out (Can Reapply) , Async waitlist adjustment");
-        System.out.println("If Course Is Enrolled and Date is after latestEnrollmentDate , Student will be Dropped, Seat is not released");
-        
+//        System.out.println("If Course Is Enrolled and Date is before latestEnrollmentDate , Student will be withdrawn(Cant Reapply), seat is released");
+//        System.out.println("If Course Is Waitlisted and Date is before latestEnrollmentDate , Student will be Opted Out (Can Reapply) , Async waitlist adjustment");
+//        System.out.println("If Course Is Enrolled and Date is after latestEnrollmentDate , Student will be Dropped, Seat is not released");
+//        
         String courseId = scanner.nextLine();
 		try {
 			boolean success = courseService.drop(studentId, courseId);
@@ -159,6 +218,8 @@ public class CourseController {
 		}catch (DropNotAllowedAfterCourseEndDateException e) {
 			System.out.println(e.getMessage());
 		}catch (DropNotAllowedForEnrollmentStatusException e) {
+			System.out.println(e.getMessage());
+		}catch (CourseNotFoundException e) {
 			System.out.println(e.getMessage());
 		}
         
@@ -180,5 +241,24 @@ public class CourseController {
             return false;
         }
         return true;
+    }
+    
+    private boolean isDateInFuture(Instant instant) {
+    	Instant now = Instant.now();
+		
+		// Convert both to LocalDate in UTC (or your preferred zone)
+		LocalDate givenDate = instant.atZone(ZoneOffset.UTC).toLocalDate();
+		LocalDate today = now.atZone(ZoneOffset.UTC).toLocalDate();
+		
+		return givenDate.isAfter(today);
+    }
+    
+    /**
+     * Pads text to fixed width while ignoring ANSI color codes for alignment.
+     */
+    private String padWithColor(String text, int width) {
+        String plain = text.replaceAll("\u001B\\[[;\\d]*m", ""); // strip ANSI
+        int padding = Math.max(0, width - plain.length());
+        return text + " ".repeat(padding);
     }
 }

@@ -137,13 +137,24 @@ public class StudentController {
         Student student = new Student(loggedInStudent);
         student.setEmail(email.isBlank() ? loggedInStudent.getEmail() : email);
         student.setName(name.isBlank() ? loggedInStudent.getName() : name);
+       
+        if(name.isBlank() && email.isBlank())
+        {
+        	System.out.println("No Changes requested ");
+        	return;
+        }
+        
         boolean isEmailUpdate = false;
         if (!email.isBlank()) 
         	isEmailUpdate = true;
+        
+       
         try {
 			
         	loggedInStudent = studentService.updateProfile(student,isEmailUpdate);
-		} 
+        	System.out.println("  Profile Successfully Updated");
+        } 
+        
         
         catch (EmailAlreadyExistsException e) {
 			System.out.println(e.getMessage());
