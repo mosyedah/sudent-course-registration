@@ -38,8 +38,7 @@ public class StudentServiceTest {
 	}
 	
 	@AfterAll
-	static void cleanupTestData() {
-		 
+	static void cleanupTestData() throws Exception {
 		for (Student student : students) {
 			((StudentRepoDynamoDb)studentRepository).deleteStudentById(student.getStudentId());
 		}
@@ -49,7 +48,7 @@ public class StudentServiceTest {
 	 // ---------- signUp ----------
     @Test
     void testSignUpSuccess() { 
-    	String email  ="testuniquenotExisting@example.com".toLowerCase();
+    	String email  ="testuniquenotexisting@example.com";
     	
     	Student student = getStudent(email);
     	
@@ -83,7 +82,7 @@ public class StudentServiceTest {
     // ---------- login ----------
     @Test
     void testLoginSuccess() {
-    	String email = "TestLoginSuccessMethod@example.com".toLowerCase();
+    	String email = "testloginsuccessmethod@example.com";
     	Student student = getStudent(email);
     	
     	studentService.signUp(student);
@@ -123,7 +122,7 @@ public class StudentServiceTest {
     // ---------- viewProfile ----------
     @Test
     void testViewProfileSuccess() {
-    	String email = "viewProfileEmailSuccess@example.com".toLowerCase();
+    	String email = "viewprofileemailsuccess@example.com";
     	String name = "View Profile";
     	Student student = getStudent(email,name);
     	
@@ -150,13 +149,13 @@ public class StudentServiceTest {
     void testUpdateProfileSuccess() { 
     	
     	String orgName = "Update Profile";
-    	String orgEmail = "OrgEmailUpdateProfile@example.com".toLowerCase();
+    	String orgEmail = "orgemailupdateprofile@example.com";
 
     	Student returned =  studentService.signUp(getStudent(orgEmail,orgName));
     	
     	
     	String newName = "Updated Profile";
-    	String newEmail = "UpdatedEmailUpdateProfile@example.com".toLowerCase();
+    	String newEmail = "updatedemailupdateprofile@example.com";
     	
     	returned.setEmail(newEmail);
     	returned.setName(newName);

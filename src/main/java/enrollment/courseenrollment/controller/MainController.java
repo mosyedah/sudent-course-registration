@@ -32,16 +32,23 @@ public class MainController {
 
             switch (choice) {
                 case "1": // Sign Up
+                	if (isSessionActive()) {
+                		showStudentMenu();
+                		break;
+                	}
                     studentController.signUp();
-                    if (isSessionActive()) showStudentMenu();
                     break;
                 case "2": // Login
+                	if (isSessionActive()) {
+                		showStudentMenu();
+                		break;
+                	}
                     studentController.login();
-                    if (isSessionActive()) showStudentMenu();
                     break;
                 case "3": // Exit
                     printMessage(GREEN, "I’m well, Have a good day. Bye!");
-                    System.exit(0);
+//                    System.exit(0);
+                    return;
                 default:
                     printMessage(RED, "Invalid choice. Please try again.");
             }
@@ -52,9 +59,14 @@ public class MainController {
      * Prints the front desk menu.
      */
     private void printFrontDeskMenu() {
-        System.out.println("\n" + CYAN + BOLD + "=====================" + RESET);
+    	
+    	if (isSessionActive()) {
+			showStudentMenu();
+		}
+    	
+        System.out.println("\n" + CYAN + BOLD + "=======================" + RESET);
         System.out.println(CYAN + BOLD + "    Atlas Institute" + RESET);
-        System.out.println(CYAN + BOLD + "=====================" + RESET);
+        System.out.println(CYAN + BOLD + "=======================" + RESET);
         System.out.println("Welcome to Front Desk. My name is Aarti, how may I help?");
         System.out.println("1. I want to Signup as Student");
         System.out.println("2. I’m already a student, I want to login");
@@ -122,7 +134,6 @@ public class MainController {
     private boolean isSessionActive() {
         SessionManager session = SessionManager.getInstance();
         if (session == null || !session.isLoggedIn()) {
-            printMessage(RED, "Session expired. Please login again.");
             return false;
         }
         return true;

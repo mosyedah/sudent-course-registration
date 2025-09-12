@@ -158,11 +158,13 @@ public class StudentController {
      * Changes the password of the logged-in student.
      */
     public void changePassword() {
-        if (!isSessionActive()) return;
+    	if (!isSessionActive()) return;
 
         System.out.println("\n" + CYAN + BOLD + "--- Change Password ---" + RESET);
         System.out.print("Enter new password: ");
         String newPassword = scanner.nextLine();
+        // double check, session may expire while user types
+        if (!isSessionActive()) return;
 
         if (!InputUtils.isValidPassword(newPassword)) {
             printMessage("Password must be at least 6 characters. Update aborted.", YELLOW);
