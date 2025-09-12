@@ -29,11 +29,13 @@ public class StudentService {
     	// TODO: add Student ID unique to student.studentId
     	// TODO: log action using logRepo.createLog(...)
     		try {
-    			if( studentRepo.getStudentByEmail(student.getEmail()) != null )
+    			if( studentRepo.getStudentByEmail(student.getEmail().toLowerCase()) != null )
     				throw new EmailAlreadyExistsException("Email Already Exists");
     			student.setStudentId(UUID.randomUUID().toString());
     			String passwordHash = hashPassword(student.getPasswordHash());
     			student.setPasswordHash(passwordHash);
+    			String email = student.getEmail().toLowerCase();
+    			student.setEmail(email);
     			studentRepo.createStudent(student);
     			String desc  = String.format("Name : %s , Email : %s", student.getName(), student.getEmail());
     			logRecord(student.getStudentId(), ActionType.SIGN_UP,desc);
@@ -47,6 +49,7 @@ public class StudentService {
     // Login by email + password hash
     public Student login(String email, String password) {
         // TODO: fetch student by email, validate password hash
+    		email = email.toLowerCase();
 			Student student = studentRepo.getStudentByEmail(email);
 			if (student == null) 
 				throw new StudentNotFoundException("Email Does Not Exist");
@@ -73,8 +76,11 @@ public class StudentService {
     public Student updateProfile(Student student , boolean isEmailUpdate) {
         // TODO: call studentRepo.updateStudent(student)
         // TODO: log action
-    	if (isEmailUpdate && studentRepo.getStudentByEmail(student.getEmail()) != null)
+    	if (isEmailUpdate && studentRepo.getStudentByEmail(student.getEmail().toLowerCase()) != null)
     		throw new EmailAlreadyExistsException("Email Already Exists, Failed to Update profile");
+    	
+    	String email = student.getEmail().toLowerCase();
+    	student.setEmail(email);
     	
     	studentRepo.updateStudent(student);
     	String desc = String.format("Email  : %s , Name : %s",student.getEmail(), student.getName() );

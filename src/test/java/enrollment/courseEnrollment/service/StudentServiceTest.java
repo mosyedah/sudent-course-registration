@@ -18,13 +18,15 @@ import enrollment.courseenrollment.service.LogService;
 import enrollment.courseenrollment.service.StudentService;
 
 public class StudentServiceTest {
-	private StudentService studentService;
-	private StudentRepository studentRepository;
+	private static StudentService studentService;
+	private static StudentRepository studentRepository;
 	
-	private List<Student> students = new ArrayList<>();
+	private static String password = "password";
+	
+	private static List<Student> students = new ArrayList<>();
 	
 	@BeforeAll
-	void setup(){
+	static void setup(){
 		studentRepository = new StudentRepoDynamoDb();
 		LogRepository logRepository = new LogRepoDynamoDb();
 		
@@ -36,7 +38,7 @@ public class StudentServiceTest {
 	}
 	
 	@AfterAll
-	void cleanupTestData() {
+	static void cleanupTestData() {
 		 
 		for (Student student : students) {
 			((StudentRepoDynamoDb)studentRepository).deleteStudentById(student.getStudentId());
@@ -47,18 +49,9 @@ public class StudentServiceTest {
 	 // ---------- signUp ----------
     @Test
     void testSignUpSuccess() { 
-    	String email  ="testuniquenotExisting@example.com";
-    	String name = "Test User Signup Method";
-    	String studentId = "Test User - "+ UUID.randomUUID().toString();
-    	String password = "password";
+    	String email  ="testuniquenotExisting@example.com".toLowerCase();
     	
-    	Student student = new Student();
-    	student.setEmail(email);
-    	student.setName(name);
-    	student.setStudentId(studentId);
-    	student.setPasswordHash(password);
-    	
-    	students.add(student);
+    	Student student = getStudent(email);
     	
     	Student returned = studentService.signUp(student);
     	
@@ -70,29 +63,14 @@ public class StudentServiceTest {
 
     @Test
     void testSignUpDuplicateEmailThrowsException() { 
-    	String email  ="TestExistingUser@example.com";
-    	String name = "Test User Signup Dup Method";
-    	String studentId = "Test User - "+ UUID.randomUUID().toString();
-    	String password = "password";
+    	String email  ="TestExistingUserUnique@example.com";
     	
-    	Student student = new Student();
-    	student.setEmail(email);
-    	student.setName(name);
-    	student.setStudentId(studentId);
-    	student.setPasswordHash(password);
+    	Student student = getStudent(email); 
     	
-    	students.add(student);
-    	
-    	Student returned = studentService.signUp(student);
+    	studentService.signUp(student);
     	
     	
-    	Student newStudent = new Student();
-    	newStudent.setEmail(email);
-    	newStudent.setName(name);
-    	newStudent.setStudentId("Test User - "+ UUID.randomUUID().toString());
-    	newStudent.setPasswordHash(password);
-    	
-    	students.add(newStudent);
+    	Student newStudent = getStudent(email);
     	
     	Assertions.assertThrows(EmailAlreadyExistsException.class, ()-> {
     		studentService.signUp(newStudent);
@@ -105,18 +83,8 @@ public class StudentServiceTest {
     // ---------- login ----------
     @Test
     void testLoginSuccess() {
-    	String email  ="TestLoginSuccessUser@example.com";
-    	String name = "Test User Login Method";
-    	String studentId = "Test User - "+ UUID.randomUUID().toString();
-    	String password = "password";
-    	
-    	Student student = new Student();
-    	student.setEmail(email);
-    	student.setName(name);
-    	student.setStudentId(studentId);
-    	student.setPasswordHash(password);
-    	
-    	students.add(student);
+    	String email = "TestLoginSuccessMethod@example.com".toLowerCase();
+    	Student student = getStudent(email);
     	
     	studentService.signUp(student);
     	
@@ -132,17 +100,8 @@ public class StudentServiceTest {
     void testLoginWithWrongPasswordThrowsInvalidCredentialsException() {
     	
 	    String email  ="TestWrongPasswordUser@example.com";
-	    String name = "Test User Login InvalidPassword Method";
-	    String studentId = "Test User - "+ UUID.randomUUID().toString();
-	    String password = "password";
-	    
-	    Student student = new Student();
-	    student.setEmail(email);
-	    student.setName(name);
-	    student.setStudentId(studentId);
-	    student.setPasswordHash(password);
-	    
-	    students.add(student);
+	   
+	    Student student = getStudent(email);
 	    
 	    studentService.signUp(student);
 	    
@@ -163,23 +122,110 @@ public class StudentServiceTest {
 
     // ---------- viewProfile ----------
     @Test
-    void testViewProfileSuccess() { }
+    void testViewProfileSuccess() {
+    	String email = "viewProfileEmailSuccess@example.com".toLowerCase();
+    	String name = "View Profile";
+    	Student student = getStudent(email,name);
+    	
+    	studentService.signUp(student);
+    	
+    	Student returned  = studentService.viewProfile(student.getStudentId());
+    	
+    	Assertions.assertEquals(email, returned.getEmail(),"Email not equal");
+    	Assertions.assertEquals(name, returned.getName(),"Name not equal");
+    }
 
     @Test
-    void testViewProfileInvalidIdThrowsException() { }
+    void testViewProfileInvalidIdThrowsException() { 
+    	String studentId = "Test Non Existing " + UUID.randomUUID().toString();
+    	
+    	Assertions.assertThrows(StudentNotFoundException.class, ()->{
+    		studentService.viewProfile(studentId);
+    	} , "Should throw StudentNotFoundException with invalid Id");
+    	
+    }
 
     // ---------- updateProfile ----------
     @Test
-    void testUpdateProfileSuccess() { }
+    void testUpdateProfileSuccess() { 
+    	
+    	String orgName = "Update Profile";
+    	String orgEmail = "OrgEmailUpdateProfile@example.com".toLowerCase();
+
+    	Student returned =  studentService.signUp(getStudent(orgEmail,orgName));
+    	
+    	
+    	String newName = "Updated Profile";
+    	String newEmail = "UpdatedEmailUpdateProfile@example.com".toLowerCase();
+    	
+    	returned.setEmail(newEmail);
+    	returned.setName(newName);
+    	
+    	Student updated = studentService.updateProfile(returned, true);
+    	
+    	Assertions.assertEquals(newEmail, updated.getEmail(),"Email Mismatch after Update");
+    	Assertions.assertEquals(newName, updated.getName(),"Name Mismatch after Update");
+    	
+    }
 
     @Test
-    void testUpdateProfileWithDuplicateEmailThrowsException() { }
+    void testUpdateProfileWithDuplicateEmailThrowsException() {
+    	String email = "DupemailUpdateProfileTest@example.com";
+    	
+    	Student student = studentService.signUp(getStudent(email));
+    	
+    	Assertions.assertThrows(EmailAlreadyExistsException.class, ()->{
+    		studentService.updateProfile(student, true);
+    	});
+    	
+    }
 
     // ---------- changePassword ----------
     @Test
-    void testChangePasswordSuccess() { }
+    void testChangePasswordSuccess() { 
+    	String email = "Passwordchangeemail@example.com";
+    	
+    	Student student = getStudent(email);
+    	
+    	studentService.signUp(student);
+    	
+    	String newPassword = "passwordNew";
+    	
+    	
+    	Assertions.assertTrue(studentService.changePassword(student.getStudentId(), newPassword),
+    			"password update failed");
+    	
+    	Assertions.assertNotNull(studentService.login(email, newPassword),"Login failed with new Password");
+    }
 
     @Test
-    void testChangePasswordFailsReturnsFalse() { }
+    void testChangePasswordFailsReturnsFalse() {
+    	String  studentId = "Test User Non existing " + UUID.randomUUID().toString();
+    	
+    	Assertions.assertThrows(StudentNotFoundException.class, ()-> {
+    		studentService.changePassword(studentId, password);
+    	}, "Should throw Student Not found for Non existing Student Id");
+    	
+    }
 
+    // ----- utility method
+    
+    private Student getStudent(String email , String name) {
+    	String studentId = "Test User - "+ UUID.randomUUID().toString();
+    	
+    	Student student = new Student();
+    	student.setEmail(email);
+    	student.setName(name);
+    	student.setStudentId(studentId);
+    	student.setPasswordHash(password);
+    	
+    	students.add(student);
+    	
+    	return student;
+    }
+    
+    private Student getStudent(String email) {
+    	String name = "Test User StudentServiceTest";
+    	return getStudent(email,name);
+    }
 }
