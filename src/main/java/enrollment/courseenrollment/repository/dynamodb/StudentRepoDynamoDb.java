@@ -24,15 +24,9 @@ public class StudentRepoDynamoDb implements StudentRepository {
 							StudentTableConstants.EMAIL, AttributeValue.builder().s(student.getEmail()).build(),
 							StudentTableConstants.PASSWORD_HASH, AttributeValue.builder().s(student.getPasswordHash()).build()
 							))
-					.conditionExpression("attribute_not_exists(#email)")
-					.expressionAttributeNames(Map.of(
-							"#email", StudentTableConstants.EMAIL))
 					.build();
 			client.putItem(request);
 			return true;
-		}
-		catch (ConditionalCheckFailedException e) {
-			throw new EmailAlreadyExistsException("Email Already Exists");
 		}
 		catch (Exception e) {
 			throw new DatabaseUnknownException("Unknown Error, Try again");
@@ -146,6 +140,23 @@ public class StudentRepoDynamoDb implements StudentRepository {
 		
 		catch (Exception e) {
 			throw new DatabaseUnknownException("Unknown Error , Try Again");
+		}
+	}
+	
+	
+	// delete  STudent by Id, currently only used for Test cleanup
+	public void deleteStudentById(String studentId) {
+		DeleteItemRequest request = DeleteItemRequest.builder()
+				.tableName(StudentTableConstants.TABLE_NAME)
+				.key(Map.of(
+						StudentTableConstants.STUDENT_ID, AttributeValue.builder().s(studentId).build()
+						))
+				.build();
+		
+		try {
+			client.deleteItem(request);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
 	}
 

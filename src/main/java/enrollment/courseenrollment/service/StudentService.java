@@ -32,9 +32,9 @@ public class StudentService {
     			if( studentRepo.getStudentByEmail(student.getEmail()) != null )
     				throw new EmailAlreadyExistsException("Email Already Exists");
     			student.setStudentId(UUID.randomUUID().toString());
-    			studentRepo.createStudent(student);
     			String passwordHash = hashPassword(student.getPasswordHash());
     			student.setPasswordHash(passwordHash);
+    			studentRepo.createStudent(student);
     			String desc  = String.format("Name : %s , Email : %s", student.getName(), student.getEmail());
     			logRecord(student.getStudentId(), ActionType.SIGN_UP,desc);
     			return student;

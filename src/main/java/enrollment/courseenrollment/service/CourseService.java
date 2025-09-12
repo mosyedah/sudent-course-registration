@@ -45,6 +45,10 @@ public class CourseService {
         return courseRepo.getAllCourses();
     }
     
+    /*
+     * Get course by courseId
+     */
+    
     public Course getCourseById(String courseId) {
     	Course course = courseRepo.getCourseById(courseId);
     	
@@ -115,10 +119,6 @@ public class CourseService {
 			
 			
 		}
-    	
-        // TODO: check seat availability, create Enrollment (ENROLLED or WAITLISTED)
-        // TODO: save using enrollmentRepo.createEnrollment(...)
-        // TODO: log action using logRepo.createLog(...)
     	
     }
 
