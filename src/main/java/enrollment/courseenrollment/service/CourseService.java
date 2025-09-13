@@ -72,6 +72,7 @@ public class CourseService {
     	if (course == null)
     		throw new CourseNotFoundException("No course found with CourseId : "+courseId);
     	
+    	
     	if (!isDateInFuture(course.getLatestEnrollmentBy()))
     		throw new CourseEnrollmentDateHasPassedException("Course Enrollment Date has Passed CourseID : " + courseId);
     	
