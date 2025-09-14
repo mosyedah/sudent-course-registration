@@ -7,21 +7,14 @@ import enrollment.courseenrollment.model.Student;
 import enrollment.courseenrollment.service.StudentService;
 
 import java.util.Scanner;
-
+import static enrollment.courseenrollment.controller.MainController.*;
 /**
  * Handles all student-related actions after signup/login.
  * Uses singleton SessionManager to check session and track current user.
  */
 public class StudentController {
 
-    // ANSI color codes
-    public static final String RESET = "\u001B[0m";
-    public static final String GREEN = "\u001B[32m";
-    public static final String RED = "\u001B[31m";
-    public static final String CYAN = "\u001B[36m";
-    public static final String YELLOW = "\u001B[33m";
-    public static final String BOLD = "\u001B[1m";
-
+   
     private final StudentService studentService;
     private final Scanner scanner;
     private Student loggedInStudent;
