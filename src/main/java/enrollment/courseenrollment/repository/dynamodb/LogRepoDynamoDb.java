@@ -3,6 +3,8 @@ package enrollment.courseenrollment.repository.dynamodb;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Repository;
+
 import enrollment.courseenrollment.model.StudentLog;
 import enrollment.courseenrollment.repository.LogRepository;
 import enrollment.courseenrollment.repository.dynamodb.constants.StudentLogTableConstants;
@@ -10,6 +12,7 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 
+@Repository
 public class LogRepoDynamoDb implements LogRepository {
 	private static final DynamoDbClient client = DynamoDbConfig.getClient();
 	@Override

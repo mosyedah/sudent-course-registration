@@ -2,8 +2,9 @@ package enrollment.courseenrollment.repository.dynamodb;
 
 import java.util.Map;
 
+import org.springframework.stereotype.Repository;
+
 import enrollment.courseenrollment.exceptions.DatabaseUnknownException;
-import enrollment.courseenrollment.exceptions.EmailAlreadyExistsException;
 import enrollment.courseenrollment.exceptions.StudentNotFoundException;
 import enrollment.courseenrollment.model.Student;
 import enrollment.courseenrollment.repository.StudentRepository;
@@ -11,6 +12,7 @@ import enrollment.courseenrollment.repository.dynamodb.constants.StudentTableCon
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 
+@Repository
 public class StudentRepoDynamoDb implements StudentRepository {
 	private static final DynamoDbClient client = DynamoDbConfig.getClient();
 	@Override

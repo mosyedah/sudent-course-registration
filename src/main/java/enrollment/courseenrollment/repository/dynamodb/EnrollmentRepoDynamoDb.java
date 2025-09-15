@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Repository;
+
 import enrollment.courseenrollment.exceptions.DatabaseUnknownException;
 import enrollment.courseenrollment.model.Enrollment;
 import enrollment.courseenrollment.model.enums.EnrollmentStatus;
@@ -17,6 +19,7 @@ import enrollment.courseenrollment.repository.dynamodb.constants.EnrollmentTable
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 
+@Repository
 public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 	private static final DynamoDbClient client = DynamoDbConfig.getClient();
 	

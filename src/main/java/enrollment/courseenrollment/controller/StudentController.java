@@ -133,14 +133,10 @@ public class StudentController {
             return;
         }
 
-        Student student = new Student(loggedInStudent);
-        student.setEmail(email.isBlank() ? loggedInStudent.getEmail() : email);
-        student.setName(name.isBlank() ? loggedInStudent.getName() : name);
-
-        boolean isEmailUpdate = !email.isBlank();
-
         try {
-            loggedInStudent = studentService.updateProfile(student, isEmailUpdate);
+            loggedInStudent = studentService.updateProfile(loggedInStudent.getStudentId()
+            		,name.isBlank() ? loggedInStudent.getName() : name
+            		, email.isBlank() ? loggedInStudent.getEmail() : email);
             printMessage("Profile updated successfully.", GREEN);
         } catch (EmailAlreadyExistsException | StudentNotFoundException e) {
             printMessage("Error: " + e.getMessage(), RED);

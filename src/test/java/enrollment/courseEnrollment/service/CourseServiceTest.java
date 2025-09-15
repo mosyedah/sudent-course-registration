@@ -5,6 +5,7 @@ import enrollment.courseenrollment.repository.EnrollmentRepository;
 import enrollment.courseenrollment.service.CourseService;
 import enrollment.courseenrollment.service.LogService;
 import enrollment.courseenrollment.service.WaitlistService;
+import enrollment.courseenrollment.exceptions.CourseAlreadyAppliedException;
 import enrollment.courseenrollment.exceptions.CourseNotFoundException;
 import enrollment.courseenrollment.exceptions.DropNotAllowedAfterCourseEndDateException;
 import enrollment.courseenrollment.exceptions.DropNotAllowedForEnrollmentStatusException;
@@ -15,8 +16,11 @@ import enrollment.courseenrollment.model.Enrollment;
 import enrollment.courseenrollment.model.enums.EnrollmentStatus;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -48,8 +52,9 @@ class CourseServiceTest {
 
 	    // build a real CourseService using mocks + real waitlistService
 	    private CourseService courseService;
+	    
 
-	    @BeforeAll
+	    @BeforeEach
 	    void setUp() {
 	        waitlistService = new WaitlistService(enrollmentRepository, logService, courseRepository);
 	        courseService = new CourseService(courseRepository, enrollmentRepository, logService, waitlistService);
@@ -144,6 +149,26 @@ class CourseServiceTest {
     	}, "Exception was not thrown for invalid course ID");
     	
     }
+    
+    @Test
+    @DisplayName("Test for course already applied")
+    void shouldThrowException_whenStudentTriesDoubleEnroll() {
+    	Enrollment enrollment = new Enrollment();
+    	enrollment.setStatus(EnrollmentStatus.ENROLLED);
+    	
+    	Course course = new Course();
+    	course.setLatestEnrollmentBy(Instant.now().plus(5, ChronoUnit.DAYS));
+    	
+    	when(courseRepository.getCourseById(anyString())).thenReturn(course);
+    	
+    	when(enrollmentRepository.getEnrollmentByStudentAndCourse(anyString(),anyString())).thenReturn(enrollment);
+    
+    	
+    	assertThrows(CourseAlreadyAppliedException.class, ()->{
+    		courseService.enroll("ss", "ss");    		
+    	}, "Should throw CourseAlreadyAppliedException, when status is other than opt Out");
+    }
+    
     
     @Test
     void shouldThrowException_whenStudentEnrollsMoreThan5Courses() {

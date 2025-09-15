@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Atlas Institute - Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body { background-color:#e3f2fd; font-family: Roboto, sans-serif; }
+    .header { background:#0d47a1; color:#fff; padding:20px 0; text-align:center; font-size:28px; }
+    .card { border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.08); border:none; }
+    .btn { border-radius:20px; font-weight:500; }
+    .table thead th { background:#f5f5f5; }
+  </style>
+</head>
+<body>
+<header class="header">Atlas Institute</header>
+
+<div class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Dashboard</h2>
+    <a th:href="@{/logout}" class="btn btn-outline-danger">Logout</a>
+  </div>
+
+    <div th:if="${successMessage}" class="alert alert-success" role="alert">
+  <span th:text="${successMessage}"></span>
+</div>
+<div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+  <span th:text="${errorMessage}"></span>
+</div>
+
+  <!-- Student Info -->
+  <div class="card p-4 mb-4">
+    <div class="d-flex justify-content-between align-it\ems-center mb-3">
+      <h4 class="mb-0">Student Details</h4>
+      <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#profileModal">
+        Edit Profile
+      </button>
+    </div>
+    <p><strong>Name:</strong> <span th:text="${student.name}">Jane Doe</span></p>
+    <p><strong>Email:</strong> <span th:text="${student.email}">jane.doe@example.com</span></p>
+  </div>
+
+  <!-- Offered Courses -->
+  <div class="card p-4 mb-4">
+    <h4 class="mb-3">All Courses</h4>
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Course Name</th>
+            <th>Status</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Seats</th>
+            <th>Enroll By</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="course : ${availableCourses}">
+            <td th:text="${course.courseName}">Intro to Java</td>
+
+            <!-- Status: Open / Closed -->
+            <td th:text="${course.latestEnrollmentBy != null and course.latestEnrollmentBy.isAfter(T(java.time.Instant).now()) ? 'Open' : 'Closed'}">
+              Open
+            </td>
+
+            <td th:text="${#temporals.format(course.startDate, 'yyyy-MM-dd')}">2025-10-01</td>
+            <td th:text="${#temporals.format(course.endDate, 'yyyy-MM-dd')}">2025-12-15</td>
+
+			<!-- Seats: N left or Waitlisted -->
+			            <td>
+			        <span th:if="${course.latestEnrollmentBy != null and course.latestEnrollmentBy.isAfter(T(java.time.Instant).now())}">
+			              <span th:if="${course.seatsFilled &lt; course.maxSeats}"
+			                    th:text="${course.maxSeats - course.seatsFilled} + ' left'">10 left</span>
+			              <span th:if="${course.seatsFilled >= course.maxSeats}">Waitlisted</span>
+			        </span>
+			        <span th:if="${course.latestEnrollmentBy == null or course.latestEnrollmentBy.isBefore(T(java.time.Instant).now())}">--</span>
+			          
+			            </td>
+
+            <!-- Enroll By -->
+            <td th:text="${#temporals.format(course.latestEnrollmentBy, 'yyyy-MM-dd')}">2025-10-15</td>
+
+            <!-- Action rules -->
+            <td>
+              <!-- Closed => show nothing -->
+              <span th:if="${course.latestEnrollmentBy == null or course.latestEnrollmentBy.isBefore(T(java.time.Instant).now())}">
+                <small class="text-muted">Closed</small>
+              </span>
+
+              <!-- Open & seats available -> Enroll -->
+              <form th:if="${course.latestEnrollmentBy != null and course.latestEnrollmentBy.isAfter(T(java.time.Instant).now()) and course.seatsFilled < course.maxSeats}"
+                    th:action="@{/dashboard/enroll}" method="post">
+                <input type="hidden" name="courseId" th:value="${course.courseId}"/>
+                <button type="submit" class="btn btn-sm btn-success">Enroll</button>
+              </form>
+
+              <!-- Open & seats full -> Apply (waitlist) -->
+              <form th:if="${course.latestEnrollmentBy != null and course.latestEnrollmentBy.isAfter(T(java.time.Instant).now()) and course.seatsFilled >= course.maxSeats}"
+                    th:action="@{/dashboard/enroll}" method="post">
+                <input type="hidden" name="courseId" th:value="${course.courseId}"/>
+                <button type="submit" class="btn btn-sm btn-outline-primary">Apply</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- My Courses -->
+  <div class="card p-4">
+    <h4 class="mb-3">My Courses</h4>
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Course Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="en : ${myCourses}">
+            <!-- Lookup course details by courseId (requires courseById map in model) -->
+            <td th:text="${courseById[en.courseId] != null ? courseById[en.courseId].courseName : 'N/A'}">Course Name</td>
+
+            <!-- Start/End dates from course -->
+            <td th:text="${courseById[en.courseId] != null ? #temporals.format(courseById[en.courseId].startDate, 'yyyy-MM-dd') : '-'}">2025-09-10</td>
+            <td th:text="${courseById[en.courseId] != null ? #temporals.format(courseById[en.courseId].endDate, 'yyyy-MM-dd') : '-'}">2025-11-30</td>
+
+            <td th:text="${en.status}">ENROLLED</td>
+
+            <td>
+              <!-- COMPLETED, WITHDRAWN, OPTED_OUT, DROPPED => no action -->
+              <span th:if="${en.status.name() == 'COMPLETED' or en.status.name() == 'WITHDRAWN' or en.status.name() == 'OPTED_OUT' or en.status.name() == 'DROPPED'}">
+                <small class="text-muted">-</small>
+              </span>
+
+              <!-- WAITLISTED -> Opt Out -->
+              <form th:if="${en.status.name() == 'WAITLISTED'}" th:action="@{/dashboard/drop}" method="post">
+                <input type="hidden" name="courseId" th:value="${en.courseId}"/>
+                <input type="hidden" name="action" value="optout"/>
+                <button type="submit" class="btn btn-sm btn-danger">Opt Out</button>
+              </form>
+
+              <!-- ENROLLED -> decide Withdraw or Drop based on enrollmentBy -->
+              <div th:if="${en.status.name() == 'ENROLLED'}">
+                <div th:if="${courseById[en.courseId] != null and courseById[en.courseId].latestEnrollmentBy.isAfter(T(java.time.Instant).now())}">
+                  <form th:action="@{/dashboard/drop}" method="post" style="display:inline">
+                    <input type="hidden" name="courseId" th:value="${en.courseId}"/>
+                    <input type="hidden" name="action" value="withdraw"/>
+                    <button type="submit" class="btn btn-sm btn-warning">Withdraw</button>
+                  </form>
+                </div>
+                <div th:if="${courseById[en.courseId] != null and courseById[en.courseId].latestEnrollmentBy.isBefore(T(java.time.Instant).now())}">
+                  <form th:action="@{/dashboard/drop}" method="post" style="display:inline">
+                    <input type="hidden" name="courseId" th:value="${en.courseId}"/>
+                    <input type="hidden" name="action" value="drop"/>
+                    <button type="submit" class="btn btn-sm btn-danger">Drop</button>
+                  </form>
+                </div>
+                <!-- fallback: if courseById missing show generic Drop -->
+                <div th:if="${courseById[en.courseId] == null}">
+                  <form th:action="@{/dashboard/drop}" method="post">
+                    <input type="hidden" name="courseId" th:value="${en.courseId}"/>
+                    <input type="hidden" name="action" value="drop"/>
+                    <button type="submit" class="btn btn-sm btn-danger">Drop</button>
+                  </form>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Profile Modal (unchanged) -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form th:action="@{/dashboard/edit-profile}" method="post">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Profile</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" name="name" class="form-control" th:value="${student.name}"/>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" th:value="${student.email}"/>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Save Profile</button>
+        </div>
+      </form>
+
+      <form th:action="@{/dashboard/change-password}" method="post">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Current Password</label>
+            <input type="password" name="oldPassword" class="form-control"/>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">New Password</label>
+            <input type="password" name="newPassword" class="form-control"/>
+          </div>
+          <button type="submit" class="btn btn-warning w-100">Change Password</button>
+        </div>
+      </form>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -151,16 +151,14 @@ public class StudentServiceTest {
     	String orgName = "Update Profile";
     	String orgEmail = "orgemailupdateprofile@example.com";
 
-    	Student returned =  studentService.signUp(getStudent(orgEmail,orgName));
+    	Student signedUp =  studentService.signUp(getStudent(orgEmail,orgName));
     	
     	
     	String newName = "Updated Profile";
     	String newEmail = "updatedemailupdateprofile@example.com";
     	
-    	returned.setEmail(newEmail);
-    	returned.setName(newName);
     	
-    	Student updated = studentService.updateProfile(returned, true);
+    	Student updated = studentService.updateProfile(signedUp.getStudentId(),newName, newEmail);
     	
     	Assertions.assertEquals(newEmail, updated.getEmail(),"Email Mismatch after Update");
     	Assertions.assertEquals(newName, updated.getName(),"Name Mismatch after Update");
@@ -171,10 +169,11 @@ public class StudentServiceTest {
     void testUpdateProfileWithDuplicateEmailThrowsException() {
     	String email = "DupemailUpdateProfileTest@example.com";
     	
-    	Student student = studentService.signUp(getStudent(email));
+    	 studentService.signUp(getStudent(email));
     	
+    	Student student2 = studentService.signUp(getStudent("updatefailednewemal@gmail.com"));
     	Assertions.assertThrows(EmailAlreadyExistsException.class, ()->{
-    		studentService.updateProfile(student, true);
+    		studentService.updateProfile(student2.getStudentId(), student2.getName(), email);
     	});
     	
     }

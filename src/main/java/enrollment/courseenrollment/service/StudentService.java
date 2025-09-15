@@ -10,8 +10,12 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+
 import enrollment.courseenrollment.repository.StudentRepository;
 
+@Service
 public class StudentService {
 
     private final StudentRepository studentRepo;
@@ -45,6 +49,10 @@ public class StudentService {
     			throw new DatabaseUnknownException(e.getMessage());
     		}	
     }
+    
+    public Student getStudentbyId(String studentId) {
+    	return studentRepo.getStudentById(studentId);
+    }
 
     // Login by email + password hash
     public Student login(String email, String password) {
@@ -72,22 +80,41 @@ public class StudentService {
         return student;
     }
 
-    // Update profile
-    public Student updateProfile(Student student , boolean isEmailUpdate) {
-        // TODO: call studentRepo.updateStudent(student)
-        // TODO: log action
-    	if (isEmailUpdate && studentRepo.getStudentByEmail(student.getEmail().toLowerCase()) != null)
-    		throw new EmailAlreadyExistsException("Email Already Exists, Failed to Update profile");
-    	
-    	String email = student.getEmail().toLowerCase();
-    	student.setEmail(email);
-    	
-    	studentRepo.updateStudent(student);
-    	String desc = String.format("Email  : %s , Name : %s",student.getEmail(), student.getName() );
-    	logRecord(student.getStudentId(), ActionType.UPDATE_PROFILE,desc);
-    	return student;
-    }
+//    // Update profile
+//    public Student updateProfile(Student student , boolean isEmailUpdate) {
+//        // TODO: call studentRepo.updateStudent(student)
+//        // TODO: log action
+//    	if (isEmailUpdate && studentRepo.getStudentByEmail(student.getEmail().toLowerCase()) != null)
+//    		throw new EmailAlreadyExistsException("Email Already Exists, Failed to Update profile");
+//    	
+//    	String email = student.getEmail().toLowerCase();
+//    	student.setEmail(email);
+//    	
+//    	studentRepo.updateStudent(student);
+//    	String desc = String.format("Email  : %s , Name : %s",student.getEmail(), student.getName() );
+//    	logRecord(student.getStudentId(), ActionType.UPDATE_PROFILE,desc);
+//    	return student;
+//    }
 
+    public Student updateProfile(String studentId, String name, String email) {
+    	email = email.toLowerCase();
+    	Student student = studentRepo.getStudentByEmail(email);
+    	if (student!=null && !studentId.equals(student.getStudentId())) {
+			throw new EmailAlreadyExistsException("Email Already Exists, Failed to Update profile");
+		}
+    	student = new Student();
+    	student.setEmail(email);
+    	student.setName(name);
+    	student.setStudentId(studentId);
+    	
+    	Student returned = studentRepo.updateStudent(student);
+    	String desc = String.format("Email  : %s , Name : %s",returned.getEmail(), returned.getName() );
+    	logRecord(student.getStudentId(), ActionType.UPDATE_PROFILE,desc);
+    	return returned;
+
+    }
+    
+    
     // Change password
     public boolean changePassword(String studentId, String newPassword) {
         // TODO: fetch, update password, save

@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.*;
 
+import org.springframework.stereotype.Service;
 
 
+@Service
 public class LogService {
 
     private final LogRepository logRepo;

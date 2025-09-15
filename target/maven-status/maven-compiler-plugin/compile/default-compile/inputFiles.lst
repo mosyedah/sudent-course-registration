@@ -4,6 +4,7 @@ C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollm
 C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\controller\MainController.java
 C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\controller\SessionManager.java
 C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\controller\StudentController.java
+C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\CourseEnrollmentApplication.java
 C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\CourseAlreadyAppliedException.java
 C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\CourseEnrollmentDateHasPassedException.java
 C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\CourseNotFoundException.java
@@ -43,3 +44,6 @@ C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollm
 C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\service\LogService.java
 C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\service\StudentService.java
 C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\service\WaitlistService.java
+C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\webApp\DashboardController.java
+C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\webApp\GlobalExceptionHandler.java
+C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\webApp\WebController.java

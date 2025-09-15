@@ -1,11 +1,12 @@
 package enrollment.courseenrollment.repository.dynamodb;
 
 import java.time.Instant;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import enrollment.courseenrollment.exceptions.CourseNotFoundException;
+import org.springframework.stereotype.Repository;
 import enrollment.courseenrollment.exceptions.DatabaseUnknownException;
 import enrollment.courseenrollment.model.Course;
 import enrollment.courseenrollment.repository.CourseRepository;
@@ -17,6 +18,7 @@ import software.amazon.awssdk.services.dynamodb.model.GetItemResponse;
 import software.amazon.awssdk.services.dynamodb.model.ScanRequest;
 import software.amazon.awssdk.services.dynamodb.model.ScanResponse;
 
+@Repository
 public class CourseRepoDynamoDb implements CourseRepository{
 	private static final DynamoDbClient client = DynamoDbConfig.getClient();
 	@Override
