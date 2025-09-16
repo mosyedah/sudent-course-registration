@@ -14,11 +14,11 @@ public class CourseEnrollmentApplication {
         SpringApplication.run(CourseEnrollmentApplication.class, args);
     }
     
-    @Bean
-    CommandLineRunner init() {
-    	return args -> {
-    		TableInitialiser.Initialiser();
-    		TablePopulator.populateAll();
-    	};
-    }
+//    @Bean // no longer needed , will just show login page as cicd demo
+//    CommandLineRunner init() {
+//    	return args -> {
+//    		TableInitialiser.Initialiser();
+//    		TablePopulator.populateAll();
+//    	};
+//    }
 }
