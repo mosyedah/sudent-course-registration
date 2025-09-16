@@ -1,5 +1,9 @@
 name: CI → Test → Build & Push (GHCR)
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     branches:
