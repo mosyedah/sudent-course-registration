@@ -1,18 +1,38 @@
 package enrollment.courseenrollment.repository.dynamodb;
 
 import enrollment.courseenrollment.repository.dynamodb.constants.*;
+
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 
 public class TableInitialiser {
 	private static final DynamoDbClient client = DynamoDbConfig.getClient();
 	
+	
 	public static void main(String[] args) {
-//		createStudentTable();
-//		createCourseTable();
-//		createEnrollmentTable();
-//		createStudentLogTable();
+		Initialiser();
+	}
+	
+	public static void Initialiser() {
+		try {
+			DescribeTableRequest request = DescribeTableRequest.builder()
+					.tableName(StudentTableConstants.TABLE_NAME)
+					.build();
+			client.describeTable(request);
+			System.out.println("Tables exists");
+			
+		} catch (ResourceNotFoundException e) {
+				createStudentTable();
+				createCourseTable();
+				createEnrollmentTable();
+				createStudentLogTable();
+			
+		}
+		catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 		
+	
 	}
 
 	/*

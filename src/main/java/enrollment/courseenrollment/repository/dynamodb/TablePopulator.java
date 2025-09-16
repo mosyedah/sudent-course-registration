@@ -5,19 +5,41 @@ import java.util.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import enrollment.courseenrollment.repository.dynamodb.constants.StudentTableConstants;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 
 public class TablePopulator {
 
     private static final DynamoDbClient client = DynamoDbConfig.getClient();
+    
+    public static void main(String[] args) {
+		populateAll();
+	}
 
-    public static void main(String[] args) throws Exception {
-//        populate("students.json", "Student");
-//        populate("enrollments.json", "Enrollment");
-//        populate("courses.json", "Course");
-        client.close();
-        System.out.println("All items inserted!");
+    public static void populateAll(){
+    	ScanRequest request = ScanRequest.builder()
+    			.tableName(StudentTableConstants.TABLE_NAME)
+    			.limit(1)
+    			.build();
+    	try {
+			ScanResponse response =  client.scan(request);
+			if(response.count() == 0) 
+			{
+				populate("students.json", "Student");
+				populate("enrollments.json", "Enrollment");
+				populate("courses.json", "Course");				
+			}else {
+				System.out.println("Tables already has data");
+			}
+				
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+    	finally {
+//    		client.close();	will nto close else results in exception conncection pool close		
+    		System.out.println("Operation complete");
+		}
     }
 
     private static void populate(String jsonFile, String tableName) throws Exception {

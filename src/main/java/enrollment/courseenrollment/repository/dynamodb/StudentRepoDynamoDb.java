@@ -54,7 +54,7 @@ public class StudentRepoDynamoDb implements StudentRepository {
 			student.setPasswordHash(item.get(StudentTableConstants.PASSWORD_HASH).s());
 			return student;
 		} catch (Exception e) {
-			throw new DatabaseUnknownException("Unknown Error , Try again");
+			throw new DatabaseUnknownException(e.getMessage());
 		}
 	}
 
@@ -82,7 +82,7 @@ public class StudentRepoDynamoDb implements StudentRepository {
 			student.setPasswordHash(item.get(StudentTableConstants.PASSWORD_HASH).s());
 			return student;
 		} catch (Exception e) {
-			throw new DatabaseUnknownException("Unknown Error , Try later");
+			throw new DatabaseUnknownException(e.getMessage());
 		}
 	}
 
