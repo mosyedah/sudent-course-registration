@@ -6,10 +6,10 @@ permissions:
   contents: read
   packages: write
 
-# run on pushes to main (change branch if needed)
+# run on pushes to master (change branch if needed)
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   build-test-and-push:
