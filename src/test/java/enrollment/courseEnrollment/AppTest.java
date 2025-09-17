@@ -10,10 +10,12 @@ import org.junit.jupiter.api.Test;
 public class AppTest {
 
     /**
-     * Rigorous Test :-)
+     * Simple Test Case To Demonstrate CICD :-)
      */
     @Test
     public void shouldAnswerWithTrue() {
         assertTrue(true);
     }
+    
+    
 }
