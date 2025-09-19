@@ -1,4 +1,4 @@
-name: CI → Test → Build & Push (GHCR)
+name: CI Test Build Deploy
 
 permissions:
   contents: read
@@ -20,9 +20,9 @@ jobs:
       - name: Set up Java 17
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '17'
-          cache: 'maven'
+          cache: maven
 
       - name: Build & test
         run: mvn -B clean test
@@ -43,7 +43,6 @@ jobs:
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
 
-	 # 👇 Cloud Run deploy
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
@@ -57,5 +56,5 @@ jobs:
           gcloud run deploy student-course-app \
             --image=ghcr.io/${{ github.repository }}:latest \
             --platform=managed \
-            --region=asia-south1 \
+            --region=us-central1 \
             --allow-unauthenticated
