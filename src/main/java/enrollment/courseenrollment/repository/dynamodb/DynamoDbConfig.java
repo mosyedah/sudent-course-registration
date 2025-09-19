@@ -10,7 +10,7 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 public class DynamoDbConfig {
 	private static DynamoDbClient client;
-	private static final String URL = "http://localhost:8000";
+	private static final String URL = "https://0de22fcd1948.ngrok-free.app";
 	
 	public static DynamoDbClient getClient() {
 		if(client == null)
