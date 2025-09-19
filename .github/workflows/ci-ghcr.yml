@@ -57,5 +57,5 @@ jobs:
           gcloud run deploy student-course-app \
             --image=ghcr.io/${{ github.repository }}:latest \
             --platform=managed \
-            --region=us-central1 \
+            --region=asia-south1 \
             --allow-unauthenticated
