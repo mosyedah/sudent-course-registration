@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: enrollment.courseEnrollment.service.CourseServiceTest
 -------------------------------------------------------------------------------
-Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.347 s -- in enrollment.courseEnrollment.service.CourseServiceTest
+Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.491 s -- in enrollment.courseEnrollment.service.CourseServiceTest

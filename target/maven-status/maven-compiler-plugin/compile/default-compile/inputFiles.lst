@@ -1,49 +1,49 @@
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\App.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\controller\CourseController.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\controller\InputUtils.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\controller\MainController.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\controller\SessionManager.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\controller\StudentController.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\CourseEnrollmentApplication.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\CourseAlreadyAppliedException.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\CourseEnrollmentDateHasPassedException.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\CourseNotFoundException.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\DatabaseUnknownException.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\DropNotAllowedAfterCourseEndDateException.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\DropNotAllowedForEnrollmentStatusException.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\EmailAlreadyExistsException.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\InvalidCredentialsException.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\InvalidDataException.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\MaxEnrollmentsLimitReachedException.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\MaxWaitlistedLimitReachedException.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\StudentIDAlreadyExistsException.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\StudentNotEnrolledForThisCourseException.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\StudentNotFoundException.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\model\Course.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\model\Enrollment.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\model\enums\ActionType.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\model\enums\EnrollmentStatus.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\model\Student.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\model\StudentLog.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\repository\CourseRepository.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\constants\CourseTableConstants.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\constants\EnrollmentTableConstants.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\constants\StudentLogTableConstants.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\constants\StudentTableConstants.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\CourseRepoDynamoDb.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\DynamoDbConfig.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\EnrollmentRepoDynamoDb.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\LogRepoDynamoDb.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\StudentRepoDynamoDb.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\TableInitialiser.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\TablePopulator.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\repository\EnrollmentRepository.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\repository\LogRepository.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\repository\StudentRepository.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\service\CourseService.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\service\LogService.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\service\StudentService.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\service\WaitlistService.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\webApp\DashboardController.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\webApp\GlobalExceptionHandler.java
-C:\Users\Administrator\eclipse-workspace\course-enrollment\src\main\java\enrollment\courseenrollment\webApp\WebController.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\App.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\controller\CourseController.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\controller\InputUtils.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\controller\MainController.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\controller\SessionManager.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\controller\StudentController.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\CourseEnrollmentApplication.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\CourseAlreadyAppliedException.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\CourseEnrollmentDateHasPassedException.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\CourseNotFoundException.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\DatabaseUnknownException.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\DropNotAllowedAfterCourseEndDateException.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\DropNotAllowedForEnrollmentStatusException.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\EmailAlreadyExistsException.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\InvalidCredentialsException.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\InvalidDataException.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\MaxEnrollmentsLimitReachedException.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\MaxWaitlistedLimitReachedException.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\StudentIDAlreadyExistsException.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\StudentNotEnrolledForThisCourseException.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\exceptions\StudentNotFoundException.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\model\Course.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\model\Enrollment.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\model\enums\ActionType.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\model\enums\EnrollmentStatus.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\model\Student.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\model\StudentLog.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\repository\CourseRepository.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\constants\CourseTableConstants.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\constants\EnrollmentTableConstants.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\constants\StudentLogTableConstants.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\constants\StudentTableConstants.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\CourseRepoDynamoDb.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\DynamoDbConfig.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\EnrollmentRepoDynamoDb.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\LogRepoDynamoDb.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\StudentRepoDynamoDb.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\TableInitialiser.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\repository\dynamodb\TablePopulator.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\repository\EnrollmentRepository.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\repository\LogRepository.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\repository\StudentRepository.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\service\CourseService.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\service\LogService.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\service\StudentService.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\service\WaitlistService.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\webApp\DashboardController.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\webApp\GlobalExceptionHandler.java
+C:\Users\ahmed\eclipse-workspace - Copy\course-enrollment\src\main\java\enrollment\courseenrollment\webApp\WebController.java

@@ -42,3 +42,20 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
+
+	 # 👇 Cloud Run deploy
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy student-course-app \
+            --image=ghcr.io/${{ github.repository }}:latest \
+            --platform=managed \
+            --region=us-central1 \
+            --allow-unauthenticated
