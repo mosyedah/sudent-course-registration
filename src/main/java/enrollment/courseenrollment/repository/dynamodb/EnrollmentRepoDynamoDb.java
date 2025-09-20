@@ -1,5 +1,6 @@
 package enrollment.courseenrollment.repository.dynamodb;
 
+import java.io.ObjectInputFilter.Status;
 import java.util.ArrayList;
 
 
@@ -221,10 +222,12 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 
 	    if (expressionValues.isEmpty()) return false;
 	    
-	   
+	    EnrollmentStatus status = enrollment.getStatus();
+	   if (EnrollmentStatus.ENROLLED == status || EnrollmentStatus.OPTED_OUT == status) {
+		updateExpression.append(" REMOVE "+ EnrollmentTableConstants.POSITION_WAITLIST);
+	   }
 
 	    try {
-	    	EnrollmentStatus status = enrollment.getStatus();
 	    	if (EnrollmentStatus.WITHDRAWN == status || EnrollmentStatus.ENROLLED == status) {
 	    		// Enrollment Update
 				Update enrollmentUpdate = Update.builder()
@@ -292,7 +295,7 @@ public class EnrollmentRepoDynamoDb implements EnrollmentRepository{
 		}
 	    
 	    catch (Exception e) {
-	        throw new DatabaseUnknownException("Unknown Error Try Later");
+	        throw new DatabaseUnknownException(e.getMessage());
 	    }
 	}
 

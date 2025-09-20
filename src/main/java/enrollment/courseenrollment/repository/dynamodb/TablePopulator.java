@@ -14,7 +14,7 @@ public class TablePopulator {
     private static final DynamoDbClient client = DynamoDbConfig.getClient();
     
     public static void main(String[] args) {
-		populateAll();
+//		populateAll();
 	}
 
     public static void populateAll(){
