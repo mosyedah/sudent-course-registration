@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: enrollment.courseEnrollment.service.StudentServiceTest
--------------------------------------------------------------------------------
-Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.166 s -- in enrollment.courseEnrollment.service.StudentServiceTest
